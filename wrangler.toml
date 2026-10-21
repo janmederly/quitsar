@@ -1,0 +1,10 @@
+name = "quitsar"
+compatibility_date = "2026-10-01"
+pages_build_output_dir = "./dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "quitsar"
+# Replace this placeholder with the ID printed by `wrangler d1 create quitsar`.
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"

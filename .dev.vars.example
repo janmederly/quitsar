@@ -1,0 +1,4 @@
+# Copy to .dev.vars for local Pages development. Never commit real secrets.
+APP_ORIGIN=http://localhost:8788
+GOOGLE_CLIENT_ID=replace-with-google-web-client-id
+GOOGLE_CLIENT_SECRET=replace-with-google-client-secret

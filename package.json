@@ -1,0 +1,26 @@
+{
+  "name": "quitsar",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node tools/serve.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:pages": "npm run build && node tests/pages-smoke.mjs",
+    "build": "node tools/build.mjs",
+    "pages:dev": "npm run build && wrangler pages dev",
+    "pages:deploy": "npm run build && wrangler pages deploy",
+    "db:local": "wrangler d1 migrations apply DB --local",
+    "db:remote": "wrangler d1 migrations apply DB --remote",
+    "start:local": "node tools/serve.mjs --local-db",
+    "test:local": "node tests/local-smoke.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.58.2",
+    "prettier": "3.6.2",
+    "wrangler": "^4.151.3"
+  }
+}

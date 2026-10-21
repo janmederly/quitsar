@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#143f3b" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'"
+    />
+    <title>quitsar · Study and practice exams</title>
+    <meta
+      name="description"
+      content="Study any subject with quitsar. Import question banks, practice recall, review missed questions, and rehearse timed exams. Guest study works offline."
+    />
+    <meta name="robots" content="noindex, follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="quitsar" />
+    <meta property="og:title" content="quitsar · Study and practice exams" />
+    <meta
+      property="og:description"
+      content="Study any subject with question banks, focused review, and timed practice exams. Guest study works offline."
+    />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="quitsar · Study and practice exams" />
+    <meta
+      name="twitter:description"
+      content="Study any subject with question banks, focused review, and timed practice exams. Guest study works offline."
+    />
+    <!-- deployment-seo -->
+    <link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles/app.css" />
+    <script type="module" src="js/app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main" data-i18n="Skip to content">Skip to content</a>
+    <aside class="sidebar" aria-label="Application" data-i18n-aria="Application">
+      <a class="brand" href="#home"
+        ><img class="brand-icon" src="assets/icon.svg" alt="" width="41" height="44" /><span
+          >quitsar<small data-i18n="STUDY ANY SUBJECT">STUDY ANY SUBJECT</small></span
+        ></a
+      >
+      <button
+        id="account-toggle"
+        data-i18n="Account &amp; help"
+        class="subtle account-toggle"
+        aria-expanded="false"
+        aria-controls="sidebar-info"
+      >
+        Account & help
+      </button>
+      <nav aria-label="Main navigation" data-i18n-aria="Main navigation" id="navigation"></nav>
+      <div class="sidebar-note" id="sidebar-info">
+        <span class="privacy-dot" aria-hidden="true"></span>
+        <span data-i18n="Private by design">Private by design</span>
+        <p data-i18n="Study as a guest or save to your private account.">
+          Study as a guest or save<br />to your private account.
+        </p>
+        <div id="account" aria-label="Account" data-i18n-aria="Account"></div>
+        <button id="help-button" class="subtle" data-i18n="? Help & shortcuts">
+          ? Help & shortcuts
+        </button>
+      </div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <span id="section-name">Overview</span>
+        <div class="header-actions">
+          <span class="local-label">◉ Local storage · Preparing offline cache</span>
+          <label class="language-picker">
+            <span class="sr-only" data-i18n="Language">Language</span>
+            <select id="header-language" disabled>
+              <option value="en" lang="en">English</option>
+              <option value="sk" lang="sk">Slovenčina</option>
+              <option value="cs" lang="cs">Čeština</option>
+              <option value="de" lang="de">Deutsch</option>
+              <option value="es" lang="es">Español</option>
+              <option value="fr" lang="fr">Français</option>
+            </select>
+          </label>
+        </div>
+      </header>
+      <main id="main" tabindex="-1">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">YOUR STUDY SPACE</p>
+            <h1>A little progress, every day.</h1>
+            <p class="subtitle">Study any subject. Build understanding. Test your knowledge.</p>
+          </div>
+        </div>
+        <div class="hero">
+          <div>
+            <p class="eyebrow">MAKE ROOM FOR RECALL</p>
+            <h2>Your next question is a good place to start.</h2>
+            <p>
+              Add a question bank for your course, or try the mathematics, science, and humanities
+              demo.
+            </p>
+            <p>
+              quitsar helps you practice recall, review missed questions, and rehearse timed
+              exams. Guests can study offline after the app cache is ready. Signed-in accounts
+              require a connection.
+            </p>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="art-card back">x²</div>
+            <div class="art-card front">
+              <span>RECALL · REFLECT · REPEAT</span>
+              <strong>A question today.&#10;Confidence tomorrow.</strong>
+              <span>✓ One step forward</span>
+            </div>
+          </div>
+        </div>
+        <noscript
+          ><p class="notice">
+            Enable JavaScript to import question banks, study, and take practice exams. Your guest
+            library is stored in this browser; accounts save to Cloudflare.
+          </p></noscript
+        >
+      </main>
+      <footer>
+        quitsar <span data-i18n="One question at a time.">One question at a time.</span>
+      </footer>
+    </div>
+    <div id="announcer" class="sr-only" role="status" aria-live="polite"></div>
+    <dialog id="modal" aria-labelledby="modal-title">
+      <div id="modal-body"></div>
+      <form method="dialog"><button data-i18n="Close">Close</button></form>
+    </dialog>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+# Allowlist the runtime context; exclude local configuration, dependencies and tests.
+**
+!Dockerfile
+!.dockerignore
+!package.json
+!index.html
+!sw.js
+!js/
+!js/**
+!styles/
+!styles/**
+!assets/
+!assets/**
+!banks/
+!banks/**
+!tools/
+!tools/serve.mjs
+!tools/local-db.mjs
+!server/
+!server/**
+!migrations/
+!migrations/0002_restore.sql
+
+!migrations/0005_api_maintenance.sql

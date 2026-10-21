@@ -1,4 +1,4 @@
-const CACHE = 'quitsar-v13';
+const CACHE = 'quitsar-v14';
 const FILES = [
   './',
   './index.html',
@@ -47,9 +47,7 @@ self.addEventListener('activate', (event) =>
       .keys()
       .then((keys) =>
         Promise.all(
-          keys
-            .filter((k) => k.startsWith('quitsar-') && k !== CACHE)
-            .map((k) => caches.delete(k))
+          keys.filter((k) => k.startsWith('quitsar-') && k !== CACHE).map((k) => caches.delete(k))
         )
       )
       .then(() => self.clients.claim())

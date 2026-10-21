@@ -690,7 +690,7 @@ export function settingsView(ctx) {
         t(
           localDatabase()
             ? 'All study data is saved on this server. Export backups regularly.'
-            : 'Guest data stays in this browser’s IndexedDB. Signed-in data is stored privately in Cloudflare D1 and requires a connection. Google verifies your identity; there are no analytics. Guest and account libraries are separate. To move data, export a guest backup, sign in, and import it. Account restores are atomic, limited to 2 MiB per transaction. Each record is limited to 1 MiB; accounts have 20 MiB and 20,000 records.'
+            : 'Guest data stays in this browser. Account data is saved privately online and requires an internet connection. To move guest data to your account, download a backup, sign in, and restore it. Google is used for sign-in. No analytics.'
         )
       ),
       el(

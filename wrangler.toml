@@ -2,9 +2,17 @@ name = "quitsar"
 compatibility_date = "2026-10-01"
 pages_build_output_dir = "./dist"
 
+# Runtime configuration. Change this if Pages uses a different production domain.
+[vars]
+APP_ORIGIN = "https://quitsar.pages.dev"
+
+# Keep GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in Cloudflare's secrets UI.
+# The build also reads APP_ORIGIN above for site URLs; no build variable is required.
+# Node 22 is selected by .node-version; SEO_PRODUCTION_BRANCH defaults to main.
+
 [[d1_databases]]
 binding = "DB"
 database_name = "quitsar"
-# Replace this placeholder with the ID printed by `wrangler d1 create quitsar`.
+# Hosted production D1 database.
 database_id = "312f4414-acdb-4c12-b8fa-fc4954feab28"
 migrations_dir = "migrations"

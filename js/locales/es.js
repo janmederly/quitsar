@@ -369,8 +369,8 @@ export default {
   'A comfortable space for long study sessions.':
     'Un espacio cómodo para largas sesiones de estudio.',
   'Storage & privacy': 'Almacenamiento y privacidad',
-  'Guest data stays in this browser’s IndexedDB. Signed-in data is stored privately in Cloudflare D1 and requires a connection. Google verifies your identity; there are no analytics. Guest and account libraries are separate. To move data, export a guest backup, sign in, and import it. Account restores are atomic, limited to 2 MiB per transaction. Each record is limited to 1 MiB; accounts have 20 MiB and 20,000 records.':
-    'Los datos de invitado permanecen en IndexedDB de este navegador. Los datos de las cuentas se almacenan de forma privada en Cloudflare D1 y requieren conexión. Google verifica tu identidad; no hay analítica. Las bibliotecas de invitado y cuenta están separadas. Para mover datos, exporta una copia de invitado, inicia sesión e impórtala. Las restauraciones en cuentas son atómicas, con un límite de 2 MiB por transacción. Cada registro tiene un límite de 1 MiB; las cuentas disponen de 20 MiB y 20.000 registros.',
+  'Guest data stays in this browser. Account data is saved privately online and requires an internet connection. To move guest data to your account, download a backup, sign in, and restore it. Google is used for sign-in. No analytics.':
+    'Los datos de invitado se guardan en este navegador. Los datos de la cuenta se guardan de forma privada en línea y requieren conexión a internet. Para transferir los datos de invitado a tu cuenta, descarga una copia de seguridad, inicia sesión y restáurala. Google se usa para iniciar sesión. Sin analítica.',
   'Request persistent browser storage': 'Solicitar almacenamiento persistente del navegador',
   'Browser granted persistent storage. Keep backups too.':
     'El navegador ha concedido almacenamiento persistente. Conserva también copias de seguridad.',

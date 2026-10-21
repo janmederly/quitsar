@@ -369,8 +369,8 @@ export default {
   'MAKE IT YOURS': 'GESTALTEN SIE IHREN LERNBEREICH',
   'A comfortable space for long study sessions.': 'Ein angenehmer Ort für lange Lernsitzungen.',
   'Storage & privacy': 'Speicher & Datenschutz',
-  'Guest data stays in this browser’s IndexedDB. Signed-in data is stored privately in Cloudflare D1 and requires a connection. Google verifies your identity; there are no analytics. Guest and account libraries are separate. To move data, export a guest backup, sign in, and import it. Account restores are atomic, limited to 2 MiB per transaction. Each record is limited to 1 MiB; accounts have 20 MiB and 20,000 records.':
-    'Gastdaten bleiben in der IndexedDB dieses Browsers. Daten angemeldeter Nutzer werden privat in Cloudflare D1 gespeichert und benötigen eine Verbindung. Google bestätigt Ihre Identität; es gibt keine Analyseverfolgung. Gast- und Kontobibliotheken sind getrennt. Zum Übertragen exportieren Sie eine Gastsicherung, melden sich an und importieren sie. Kontowiederherstellungen sind atomar und auf 2 MiB pro Transaktion begrenzt. Jeder Datensatz ist auf 1 MiB begrenzt; Konten verfügen über 20 MiB und 20.000 Datensätze.',
+  'Guest data stays in this browser. Account data is saved privately online and requires an internet connection. To move guest data to your account, download a backup, sign in, and restore it. Google is used for sign-in. No analytics.':
+    'Gastdaten bleiben in diesem Browser. Kontodaten werden privat online gespeichert und erfordern eine Internetverbindung. Um Gastdaten in Ihr Konto zu übertragen, laden Sie eine Sicherung herunter, melden Sie sich an und stellen Sie die Sicherung wieder her. Google wird zur Anmeldung verwendet. Keine Analyseverfolgung.',
   'Request persistent browser storage': 'Dauerhaften Browserspeicher anfordern',
   'Browser granted persistent storage. Keep backups too.':
     'Der Browser hat dauerhaften Speicher gewährt. Bewahren Sie auch Sicherungen auf.',
@@ -540,8 +540,7 @@ export default {
     'Kontotransaktion überschreitet 20.000 Datensätze.',
   'Local transaction failed. No partial changes were saved.':
     'Lokale Transaktion fehlgeschlagen. Es wurden keine Teiländerungen gespeichert.',
-  'Expected a quitsar backup version 1.':
-    'Eine quitsar-Sicherung der Version 1 wird erwartet.',
+  'Expected a quitsar backup version 1.': 'Eine quitsar-Sicherung der Version 1 wird erwartet.',
   'records.{0}: unsupported store or invalid array':
     'records.{0}: nicht unterstützter Speicher oder ungültiges Array',
   '{0}: invalid or duplicate record ID': '{0}: ungültige oder doppelte Datensatz-ID',

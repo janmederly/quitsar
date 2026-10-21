@@ -365,8 +365,8 @@ export default {
   'MAKE IT YOURS': 'PODĽA VAŠICH PREDSTÁV',
   'A comfortable space for long study sessions.': 'Pohodlný priestor na dlhšie učenie.',
   'Storage & privacy': 'Úložisko a súkromie',
-  'Guest data stays in this browser’s IndexedDB. Signed-in data is stored privately in Cloudflare D1 and requires a connection. Google verifies your identity; there are no analytics. Guest and account libraries are separate. To move data, export a guest backup, sign in, and import it. Account restores are atomic, limited to 2 MiB per transaction. Each record is limited to 1 MiB; accounts have 20 MiB and 20,000 records.':
-    'Údaje hosťa zostávajú v IndexedDB tohto prehliadača. Údaje prihlásených používateľov sú súkromne uložené v Cloudflare D1 a vyžadujú pripojenie. Google overuje vašu identitu; aplikácia nepoužíva analytiku. Knižnice hosťa a účtu sú oddelené. Na prenos údajov exportujte zálohu hosťa, prihláste sa a importujte ju. Obnovy účtu sú atómové, s limitom 2 MiB na transakciu. Každý záznam má limit 1 MiB; účty majú 20 MiB a 20 000 záznamov.',
+  'Guest data stays in this browser. Account data is saved privately online and requires an internet connection. To move guest data to your account, download a backup, sign in, and restore it. Google is used for sign-in. No analytics.':
+    'Údaje hosťa zostávajú v tomto prehliadači. Údaje účtu sa ukladajú súkromne online a vyžadujú internetové pripojenie. Ak chcete preniesť údaje hosťa do účtu, stiahnite si zálohu, prihláste sa a obnovte ju. Google slúži na prihlásenie. Bez analytiky.',
   'Request persistent browser storage': 'Požiadať o trvalé úložisko prehliadača',
   'Browser granted persistent storage. Keep backups too.':
     'Prehliadač povolil trvalé úložisko. Uchovávajte si aj zálohy.',

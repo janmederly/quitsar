@@ -371,8 +371,8 @@ export default {
   'A comfortable space for long study sessions.':
     'Un espace confortable pour les longues séances d’étude.',
   'Storage & privacy': 'Stockage et confidentialité',
-  'Guest data stays in this browser’s IndexedDB. Signed-in data is stored privately in Cloudflare D1 and requires a connection. Google verifies your identity; there are no analytics. Guest and account libraries are separate. To move data, export a guest backup, sign in, and import it. Account restores are atomic, limited to 2 MiB per transaction. Each record is limited to 1 MiB; accounts have 20 MiB and 20,000 records.':
-    'Les données d’invité restent dans l’IndexedDB de ce navigateur. Les données des comptes sont stockées en privé dans Cloudflare D1 et nécessitent une connexion. Google vérifie votre identité ; il n’y a pas de suivi analytique. Les bibliothèques d’invité et de compte sont séparées. Pour déplacer des données, exportez une sauvegarde d’invité, connectez-vous et importez-la. Les restaurations de compte sont atomiques et limitées à 2 MiB par transaction. Chaque enregistrement est limité à 1 MiB ; les comptes disposent de 20 MiB et de 20 000 enregistrements.',
+  'Guest data stays in this browser. Account data is saved privately online and requires an internet connection. To move guest data to your account, download a backup, sign in, and restore it. Google is used for sign-in. No analytics.':
+    'Les données en mode invité restent dans ce navigateur. Les données du compte sont enregistrées en ligne de manière privée et nécessitent une connexion Internet. Pour transférer vos données invité vers votre compte, téléchargez une sauvegarde, connectez-vous et restaurez-la. Google sert à la connexion. Aucune analyse d’utilisation.',
   'Request persistent browser storage': 'Demander un stockage persistant au navigateur',
   'Browser granted persistent storage. Keep backups too.':
     'Le navigateur a accordé le stockage persistant. Conservez aussi des sauvegardes.',
@@ -544,8 +544,7 @@ export default {
     'La transaction du compte dépasse 20 000 enregistrements.',
   'Local transaction failed. No partial changes were saved.':
     'Échec de la transaction locale. Aucune modification partielle n’a été enregistrée.',
-  'Expected a quitsar backup version 1.':
-    'Une sauvegarde quitsar version 1 est attendue.',
+  'Expected a quitsar backup version 1.': 'Une sauvegarde quitsar version 1 est attendue.',
   'records.{0}: unsupported store or invalid array':
     'records.{0} : stockage non pris en charge ou tableau non valide',
   '{0}: invalid or duplicate record ID': '{0} : ID d’enregistrement non valide ou en double',

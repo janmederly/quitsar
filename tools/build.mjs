@@ -1,7 +1,12 @@
 import { cp, mkdir, rm, writeFile, readFile } from 'node:fs/promises';
 import { seoFiles } from './seo.mjs';
+// Use the committed runtime origin when Pages exposes no build-variable UI.
+// Read the simple quoted APP_ORIGIN value in this project's [vars] table.
+const config = await readFile(new URL('../wrangler.toml', import.meta.url), 'utf8');
+const vars = config.split(/^\[vars\]\s*$/m)[1]?.split(/^\[/m)[0] || '';
+const appOrigin = vars.match(/^\s*APP_ORIGIN\s*=\s*["']([^"']+)["']\s*(?:#.*)?$/m)?.[1];
 const seo = seoFiles(await readFile(new URL('../index.html', import.meta.url), 'utf8'), {
-  url: process.env.SITE_URL,
+  url: process.env.SITE_URL || appOrigin,
   noindex:
     process.env.SEO_NOINDEX === '1' ||
     (process.env.CF_PAGES === '1' &&
@@ -48,5 +53,5 @@ await writeFile(
 console.log('Cloudflare Pages assets built in dist/');
 if (!seo.indexable)
   console.log(
-    'Search indexing disabled. Set SITE_URL to your production HTTPS origin and check preview settings to enable it.'
+    'Search indexing disabled. Check APP_ORIGIN in wrangler.toml and the preview/noindex settings.'
   );

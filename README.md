@@ -1,6 +1,6 @@
 # Quitsar
 
-:warning: This is an vibe-coded experiment. Use with caution, the webapp was tested, code briefly checked, but I did not do any deep code review for this.
+:warning: This is an vibe-coded experiment. Use with caution, the webapp was tested, code was briefly checked, but I did not do any deep code review for this.
 
 A study and practice-exam app built with HTML, CSS, and native JavaScript modules. Import question banks, review with spaced repetition, and take configurable practice exams with detailed results.
 

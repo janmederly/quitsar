@@ -1452,3 +1452,100 @@ test('format guide recovers from a failed asset request without disturbing impor
   await dialog.getByRole('button', { name: 'Try again', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Copy AI prompt', exact: true })).toBeVisible();
 });
+
+test('public legal pages work without JavaScript and are linked from the homepage', async ({
+  page,
+  browser
+}) => {
+  const legal = page.getByRole('navigation', { name: 'Legal pages', exact: true });
+  await expect(legal.getByRole('link', { name: 'Privacy Policy', exact: true })).toHaveAttribute(
+    'href',
+    '/privacy.html'
+  );
+  await expect(legal.getByRole('link', { name: 'Terms of Service', exact: true })).toHaveAttribute(
+    'href',
+    '/terms.html'
+  );
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  try {
+    const document = await context.newPage();
+    await document.goto('http://127.0.0.1:8080/privacy.html');
+    await expect(
+      document.getByRole('heading', { name: 'Privacy Policy', exact: true })
+    ).toBeVisible();
+    await expect(document.getByText('Jan Mederly, Slovakia', { exact: true })).toBeVisible();
+    await expect(
+      document.getByRole('link', { name: 'jan.mederly@gmail.com', exact: true }).first()
+    ).toHaveAttribute('href', 'mailto:jan.mederly@gmail.com');
+    await expect(document.getByText(/24 calendar months have passed/)).toBeVisible();
+    await document
+      .getByRole('navigation', { name: 'Legal pages' })
+      .getByRole('link', { name: 'Terms of Service' })
+      .click();
+    await expect(
+      document.getByRole('heading', { name: 'Terms of Service', exact: true })
+    ).toBeVisible();
+    await expect(document.locator('script')).toHaveCount(0);
+  } finally {
+    await context.close();
+  }
+});
+
+test('account deletion confirms identity, retains the account on failure, and preserves guest data', async ({
+  page
+}) => {
+  const guestBanks = await records(page, 'banks');
+  let signedIn = true;
+  let attempts = 0;
+  await page.route('**/api/auth/session', (route) =>
+    route.fulfill({
+      json: {
+        user: signedIn ? { id: 'account-a', email: 'account@example.com', name: 'Account' } : null,
+        googleEnabled: true
+      }
+    })
+  );
+  await page.route('**/api/records**', (route) => {
+    const url = new URL(route.request().url());
+    if (route.request().method() === 'POST') return route.fulfill({ json: { ok: true } });
+    const values = url.searchParams.get('store') === 'banks' ? guestBanks : [];
+    return route.fulfill({
+      json: url.searchParams.has('id')
+        ? values.find((value) => value.id === url.searchParams.get('id')) || null
+        : values
+    });
+  });
+  await page.route('**/api/auth/delete-account', (route) => {
+    attempts++;
+    expect(route.request().postDataJSON()).toEqual({
+      confirmation: 'DELETE',
+      email: 'account@example.com'
+    });
+    expect(route.request().headers()['x-quitsar-user']).toBe('account-a');
+    if (attempts === 1)
+      return route.fulfill({ status: 503, json: { error: 'Temporary deletion failure' } });
+    signedIn = false;
+    return route.fulfill({ json: { ok: true } });
+  });
+  await page.reload();
+  await go(page, 'Settings');
+  await expect(page.getByText(/automatically deleted after 24 months/)).toBeVisible();
+  await page.getByRole('button', { name: 'Delete account', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: 'Delete account?', exact: true });
+  const confirm = dialog.getByRole('button', { name: 'Permanently delete account', exact: true });
+  await expect(confirm).toBeDisabled();
+  await dialog.getByRole('textbox', { name: 'Type DELETE to confirm' }).fill('delete');
+  await expect(confirm).toBeDisabled();
+  expect(attempts).toBe(0);
+  await dialog.getByRole('textbox', { name: 'Type DELETE to confirm' }).fill('DELETE');
+  await confirm.click();
+  await expect(dialog.getByRole('alert')).toHaveText('Temporary deletion failure');
+  expect(await page.evaluate(() => localStorage.getItem('quitsar-account'))).toBe('1');
+  await expect(confirm).toBeEnabled();
+  await confirm.click();
+  await expect(page.getByRole('heading', { name: 'Your study space', exact: true })).toBeVisible();
+  expect(await page.evaluate(() => localStorage.getItem('quitsar-account'))).toBeNull();
+  expect((await records(page, 'banks')).map((b) => b.id)).toEqual(guestBanks.map((b) => b.id));
+  await go(page, 'Settings');
+  await expect(page.getByRole('button', { name: 'Delete account', exact: true })).toHaveCount(0);
+});

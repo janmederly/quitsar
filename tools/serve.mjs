@@ -33,9 +33,7 @@ const storage =
   process.env.STORAGE_MODE || (process.argv.includes('--local-db') ? 'local' : 'browser');
 if (!['browser', 'local'].includes(storage))
   throw new Error('STORAGE_MODE must be browser or local.');
-const filename = path.resolve(
-  process.env.LOCAL_DB_PATH || path.join(root, '.data/quitsar.sqlite')
-);
+const filename = path.resolve(process.env.LOCAL_DB_PATH || path.join(root, '.data/quitsar.sqlite'));
 const local =
   storage === 'local' ? await (await import('./local-db.mjs')).openLocalDatabase(filename) : null;
 const mime = {
@@ -84,7 +82,7 @@ const server = http
       }
       // Serve only app assets. Database files, source tooling, and configuration stay private.
       if (
-        !['/', '/index.html', '/sw.js'].includes(pathname) &&
+        !['/', '/index.html', '/privacy.html', '/terms.html', '/sw.js'].includes(pathname) &&
         !['/js/', '/styles/', '/assets/', '/banks/'].some((prefix) => pathname.startsWith(prefix))
       )
         throw new Error('Not a public asset');

@@ -18,7 +18,8 @@ const migrations = [
   '0002_restore.sql',
   '0003_oauth_limits.sql',
   '0004_constant_quotas.sql',
-  '0005_api_maintenance.sql'
+  '0005_api_maintenance.sql',
+  '0006_account_retention.sql'
 ];
 async function database() {
   const { DatabaseSync } = await import('node:sqlite');
@@ -223,6 +224,12 @@ test(
     const { db, DB } = await database();
     t.after(() => db.close());
     for (let i = 0; i < 7; i++) {
+      db.prepare('INSERT INTO users VALUES (?,?,?,?)').run(
+        'owner' + i,
+        'owner' + i + '@example.com',
+        'Owner',
+        1
+      );
       db.prepare('INSERT INTO restore_batches (owner,id,expires_at) VALUES (?,?,?)').run(
         'owner' + i,
         'id' + i,

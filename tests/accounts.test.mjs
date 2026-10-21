@@ -186,7 +186,8 @@ except Exception as error:
         '0002_restore.sql',
         '0003_oauth_limits.sql',
         '0004_constant_quotas.sql',
-        '0005_api_maintenance.sql'
+        '0005_api_maintenance.sql',
+        '0006_account_retention.sql'
       ])
         execute({
           script: await readFile(new URL('../migrations/' + migration, import.meta.url), 'utf8')

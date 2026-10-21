@@ -248,5 +248,21 @@ export default {
   'Back to import': 'Back to import',
   'The format guide could not be loaded. Check your connection and try again.':
     'The format guide could not be loaded. Check your connection and try again.',
-  'Try again': 'Try again'
+  'Try again': 'Try again',
+  'Privacy Policy': 'Privacy Policy',
+  'Terms of Service': 'Terms of Service',
+  'Delete account': 'Delete account',
+  'Delete account?': 'Delete account?',
+  'Account: {0}': 'Account: {0}',
+  'This permanently deletes your online profile, question banks, images, study progress, exams, preferences, and unfinished uploads. All devices will be signed out. Your Google account and guest library are kept.':
+    'This permanently deletes your online profile, question banks, images, study progress, exams, preferences, and unfinished uploads. All devices will be signed out. Your Google account and guest library are kept.',
+  'Type DELETE to confirm': 'Type DELETE to confirm',
+  'Permanently delete account': 'Permanently delete account',
+  'Accounts and their data are automatically deleted after 24 months without signing in with Google. You can delete your account sooner.':
+    'Accounts and their data are automatically deleted after 24 months without signing in with Google. You can delete your account sooner.',
+  'Sign in again before deleting your account.': 'Sign in again before deleting your account.',
+  'Confirm the current account and type DELETE to continue.':
+    'Confirm the current account and type DELETE to continue.',
+  'Your account was deleted. Reload before continuing.':
+    'Your account was deleted. Reload before continuing.'
 };

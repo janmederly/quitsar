@@ -5,7 +5,7 @@ ENV NODE_ENV=production \
     HOST=0.0.0.0
 
 # Only runtime files enter the image; no dependency installation is needed.
-COPY --chown=node:node package.json index.html sw.js ./
+COPY --chown=node:node package.json index.html privacy.html terms.html sw.js ./
 COPY --chown=node:node js/ ./js/
 COPY --chown=node:node styles/ ./styles/
 COPY --chown=node:node assets/ ./assets/

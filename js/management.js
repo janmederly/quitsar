@@ -2,7 +2,13 @@ import { t, label, getLanguage, setLanguage } from './i18n.js';
 import * as db from './storage.js';
 import { loadDemoBank, DEMO_ID } from './demo.js';
 import { LIMITS } from './limits.js';
-import { signedIn, localDatabase, usesServerStorage } from './account.js';
+import {
+  signedIn,
+  localDatabase,
+  usesServerStorage,
+  deleteAccount,
+  accountEmail
+} from './account.js';
 import { el, button, badge, field, modal, date, download, table, prettyType } from './dom.js';
 import { validateBank } from './validation.js';
 import { readAsset, releaseAssets } from './assets.js';
@@ -518,6 +524,60 @@ export function toolsView(ctx) {
 export function settingsView(ctx) {
   const controls = {};
   const s = ctx.settings;
+  function confirmAccountDeletion() {
+    const input = el('input', {
+      autocomplete: 'off',
+      spellcheck: 'false',
+      required: true,
+      pattern: 'DELETE'
+    });
+    const error = el('p', { role: 'alert' });
+    const submit = el(
+      'button',
+      { type: 'submit', class: 'danger', disabled: true },
+      t('Permanently delete account')
+    );
+    let busy = false;
+    input.addEventListener('input', () => {
+      submit.disabled = busy || input.value !== 'DELETE';
+    });
+    modal(
+      t('Delete account?'),
+      el('p', {}, t`Account: ${accountEmail()}`),
+      el(
+        'p',
+        {},
+        t(
+          'This permanently deletes your online profile, question banks, images, study progress, exams, preferences, and unfinished uploads. All devices will be signed out. Your Google account and guest library are kept.'
+        )
+      ),
+      button(t('Download full backup first'), () => exportBackup(), 'secondary'),
+      el(
+        'form',
+        {
+          onsubmit: async (event) => {
+            event.preventDefault();
+            if (busy || input.value !== 'DELETE') return;
+            busy = true;
+            submit.disabled = true;
+            error.textContent = '';
+            try {
+              await deleteAccount(input.value);
+            } catch (failure) {
+              error.textContent = failure.message;
+            } finally {
+              busy = false;
+              submit.disabled = input.value !== 'DELETE';
+            }
+          }
+        },
+        field(t('Type DELETE to confirm'), input),
+        error,
+        submit
+      )
+    );
+    input.focus();
+  }
   const num = (key, label, hint, min = 1, max = 5256000) => {
     const input = el('input', {
       type: 'number',
@@ -681,6 +741,28 @@ export function settingsView(ctx) {
   ctx.show(
     ctx.title(t('MAKE IT YOURS'), t('Settings'), t('A comfortable space for long study sessions.')),
     form,
+    signedIn() &&
+      el(
+        'section',
+        { class: 'panel' },
+        el('h2', {}, t('Account')),
+        el('p', {}, accountEmail()),
+        el(
+          'p',
+          { class: 'muted' },
+          t(
+            'Accounts and their data are automatically deleted after 24 months without signing in with Google. You can delete your account sooner.'
+          )
+        ),
+        el(
+          'p',
+          {},
+          el('a', { href: '/privacy.html' }, t('Privacy Policy')),
+          ' · ',
+          el('a', { href: '/terms.html' }, t('Terms of Service'))
+        ),
+        button(t('Delete account'), confirmAccountDeletion, 'danger')
+      ),
     el(
       'section',
       { class: 'panel' },

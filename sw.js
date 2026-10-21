@@ -1,7 +1,9 @@
-const CACHE = 'quitsar-v28';
+const CACHE = 'quitsar-v29';
 const FILES = [
   './',
   './index.html',
+  './privacy.html',
+  './terms.html',
   './styles/app.css',
   './assets/icon.svg',
   './assets/google/g-logo.png',

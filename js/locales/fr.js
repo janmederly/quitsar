@@ -809,5 +809,22 @@ export default {
   'Copy schema': 'Copier le schéma',
   'Back to import': 'Retour à l’importation',
   'The format guide could not be loaded. Check your connection and try again.':
-    'Le guide de format n’a pas pu être chargé. Vérifiez votre connexion et réessayez.'
+    'Le guide de format n’a pas pu être chargé. Vérifiez votre connexion et réessayez.',
+  'Privacy Policy': 'Politique de confidentialité',
+  'Terms of Service': 'Conditions d’utilisation',
+  'Delete account': 'Supprimer le compte',
+  'Delete account?': 'Supprimer le compte ?',
+  'Account: {0}': 'Compte : {0}',
+  'This permanently deletes your online profile, question banks, images, study progress, exams, preferences, and unfinished uploads. All devices will be signed out. Your Google account and guest library are kept.':
+    'Votre profil en ligne, banques, images, progression, examens, préférences et téléversements incomplets seront supprimés définitivement. Toutes les sessions seront fermées. Votre compte Google et votre bibliothèque invitée seront conservés.',
+  'Type DELETE to confirm': 'Saisissez DELETE pour confirmer',
+  'Permanently delete account': 'Supprimer définitivement le compte',
+  'Accounts and their data are automatically deleted after 24 months without signing in with Google. You can delete your account sooner.':
+    'Les comptes et leurs données sont supprimés automatiquement après 24 mois sans connexion Google. Vous pouvez supprimer votre compte plus tôt.',
+  'Sign in again before deleting your account.':
+    'Reconnectez-vous avant de supprimer votre compte.',
+  'Confirm the current account and type DELETE to continue.':
+    'Confirmez le compte actuel et saisissez DELETE pour continuer.',
+  'Your account was deleted. Reload before continuing.':
+    'Votre compte a été supprimé. Rechargez la page pour continuer.'
 };

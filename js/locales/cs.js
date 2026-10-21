@@ -793,5 +793,21 @@ export default {
   'Copy schema': 'Kopírovat schéma',
   'Back to import': 'Zpět k importu',
   'The format guide could not be loaded. Check your connection and try again.':
-    'Návod k formátu se nepodařilo načíst. Zkontrolujte připojení a zkuste to znovu.'
+    'Návod k formátu se nepodařilo načíst. Zkontrolujte připojení a zkuste to znovu.',
+  'Privacy Policy': 'Ochrana osobních údajů',
+  'Terms of Service': 'Podmínky používání',
+  'Delete account': 'Odstranit účet',
+  'Delete account?': 'Odstranit účet?',
+  'Account: {0}': 'Účet: {0}',
+  'This permanently deletes your online profile, question banks, images, study progress, exams, preferences, and unfinished uploads. All devices will be signed out. Your Google account and guest library are kept.':
+    'Trvale se odstraní váš online profil, banky otázek, obrázky, pokrok, zkoušky, nastavení a nedokončená nahrávání. Všechna zařízení se odhlásí. Účet Google a knihovna hosta zůstanou zachovány.',
+  'Type DELETE to confirm': 'Pro potvrzení napište DELETE',
+  'Permanently delete account': 'Trvale odstranit účet',
+  'Accounts and their data are automatically deleted after 24 months without signing in with Google. You can delete your account sooner.':
+    'Účty a jejich údaje se automaticky odstraní po 24 měsících bez přihlášení přes Google. Účet můžete odstranit i dříve.',
+  'Sign in again before deleting your account.': 'Před odstraněním účtu se znovu přihlaste.',
+  'Confirm the current account and type DELETE to continue.':
+    'Potvrďte aktuální účet a pokračujte napsáním DELETE.',
+  'Your account was deleted. Reload before continuing.':
+    'Váš účet byl odstraněn. Před pokračováním obnovte stránku.'
 };

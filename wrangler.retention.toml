@@ -1,0 +1,14 @@
+name = "quitsar-account-retention"
+main = "workers/account-retention.js"
+compatibility_date = "2026-10-01"
+workers_dev = false
+
+[triggers]
+# UTC; bounded batches also keep cleanup affordable for small installations.
+crons = ["17 * * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "quitsar"
+database_id = "312f4414-acdb-4c12-b8fa-fc4954feab28"
+migrations_dir = "migrations"

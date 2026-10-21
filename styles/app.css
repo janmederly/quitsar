@@ -1750,3 +1750,60 @@
     }
   }
 }
+
+@layer components {
+  footer nav,
+  .legal-header nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .signin-legal {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.75rem;
+  }
+  .legal-page {
+    min-height: 100vh;
+  }
+  .legal-header,
+  .legal-footer {
+    max-width: 80ch;
+    margin-inline: auto;
+    padding: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .legal-header {
+    border-bottom: 1px solid var(--border);
+  }
+  .legal-header > a {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  .legal-page main {
+    max-width: 80ch;
+    margin-inline: auto;
+    padding: 32px 24px 64px;
+  }
+  .legal-page main h2 {
+    margin-top: 36px;
+  }
+  .legal-page li + li {
+    margin-top: 12px;
+  }
+  .legal-page main p,
+  .legal-page main li {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+@layer components {
+  .workspace > footer {
+    flex-wrap: wrap;
+    gap: 12px 24px;
+  }
+}

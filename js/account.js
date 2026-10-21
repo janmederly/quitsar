@@ -10,8 +10,18 @@ export const setBeforeAccountChange = (action) => {
 };
 let writeQueue = Promise.resolve();
 export const signedIn = () => !!session.user;
+export const accountEmail = () => session.user?.email || '';
 export const localDatabase = () => session.storage === 'local';
 export const usesServerStorage = () => signedIn() || localDatabase();
+export async function deleteAccount(confirmation) {
+  if (!session.user) throw new Error(t('Sign in again before deleting your account.'));
+  await beforeAccountChange();
+  if (accountWrites) throw new Error(t('Please wait for your changes to finish saving.'));
+  await api('/api/auth/delete-account', { confirmation, email: session.user.email });
+  localStorage.removeItem('quitsar-account');
+  history.replaceState(null, '', '/#home');
+  location.reload();
+}
 export async function api(path, body) {
   if (body && jsonBytes(body) > LIMITS.request)
     throw new Error(t('Transaction exceeds 2 MiB. Import a smaller backup.'));
@@ -120,6 +130,16 @@ export function showAccount() {
         ]
       : [])
   );
+  if (header?.querySelector('.google-signin'))
+    header.append(
+      el(
+        'small',
+        { class: 'signin-legal' },
+        el('a', { href: '/privacy.html' }, t('Privacy Policy')),
+        ' · ',
+        el('a', { href: '/terms.html' }, t('Terms of Service'))
+      )
+    );
   if (localDatabase()) {
     target.replaceChildren(
       el('p', {}, t('Local database · single user')),

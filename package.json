@@ -16,7 +16,8 @@
     "db:local": "wrangler d1 migrations apply DB --local",
     "db:remote": "wrangler d1 migrations apply DB --remote",
     "start:local": "node tools/serve.mjs --local-db",
-    "test:local": "node tests/local-smoke.mjs"
+    "test:local": "node tests/local-smoke.mjs",
+    "retention:deploy": "wrangler deploy --config wrangler.retention.toml"
   },
   "devDependencies": {
     "@playwright/test": "1.58.2",

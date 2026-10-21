@@ -17,7 +17,16 @@ const seo = seoFiles(await readFile(new URL('../index.html', import.meta.url), '
 const output = new URL('../dist/', import.meta.url);
 await rm(output, { recursive: true, force: true });
 await mkdir(output, { recursive: true });
-for (const path of ['index.html', 'sw.js', 'styles', 'js', 'assets', 'banks']) {
+for (const path of [
+  'index.html',
+  'privacy.html',
+  'terms.html',
+  'sw.js',
+  'styles',
+  'js',
+  'assets',
+  'banks'
+]) {
   await cp(new URL('../' + path, import.meta.url), new URL(path, output), { recursive: true });
 }
 await writeFile(new URL('index.html', output), seo.html);

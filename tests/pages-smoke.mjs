@@ -187,8 +187,34 @@ INSERT INTO sessions VALUES ('${digest}','smoke',${Date.now() + 300000});`
     false
   );
   await context.close();
+  // Exercise the real D1-backed deletion endpoint and its Settings flow.
+  const deletionContext = await browser.newContext();
+  await deletionContext.addCookies([
+    { name: 'qr_session', value: token, url: origin, httpOnly: true, sameSite: 'Lax' }
+  ]);
+  const deletionPage = await deletionContext.newPage();
+  await deletionPage.goto(origin + '/#settings');
+  await deletionPage.getByRole('button', { name: 'Delete account', exact: true }).click();
+  const deletionDialog = deletionPage.getByRole('dialog', { name: 'Delete account?', exact: true });
+  await deletionDialog.getByRole('textbox', { name: 'Type DELETE to confirm' }).fill('DELETE');
+  await deletionDialog
+    .getByRole('button', { name: 'Permanently delete account', exact: true })
+    .click();
+  await deletionPage.getByRole('heading', { name: 'Your study space', exact: true }).waitFor();
+  assert.equal(await deletionPage.evaluate(() => localStorage.getItem('quitsar-account')), null);
+  assert.equal(
+    (
+      await fetch(origin + '/api/records?store=banks', {
+        headers: { Cookie: `qr_session=${token}`, 'X-Quitsar-User': 'smoke' }
+      })
+    ).status,
+    401
+  );
+  for (const document of ['privacy.html', 'terms.html'])
+    assert.equal((await fetch(origin + '/' + document)).status, 200);
+  await deletionContext.close();
   console.log(
-    'Pages smoke passed: routing, secret exclusion, D1 OAuth limits, large atomic restores, account uploads/settings, save ordering and expired-session isolation.'
+    'Pages smoke passed: routing, secret exclusion, D1 OAuth limits, large atomic restores, account uploads/settings, save ordering, expired-session isolation, public legal pages and account deletion.'
   );
 } catch (error) {
   console.error(logs);

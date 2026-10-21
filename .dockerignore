@@ -4,6 +4,8 @@
 !.dockerignore
 !package.json
 !index.html
+!privacy.html
+!terms.html
 !sw.js
 !js/
 !js/**

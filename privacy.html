@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en" data-theme="system">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'none'; style-src 'self'; img-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'"
+    />
+    <meta name="robots" content="noindex, follow" />
+    <meta
+      name="description"
+      content="How quitsar handles account details, study data, cookies, retention, deletion, and privacy rights."
+    />
+    <title>Privacy Policy · quitsar</title>
+    <link rel="icon" href="/assets/icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles/app.css" />
+  </head>
+  <body class="legal-page">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="legal-header">
+      <a href="/">quitsar</a>
+      <nav aria-label="Legal pages">
+        <a href="/privacy.html">Privacy Policy</a><a href="/terms.html">Terms of Service</a>
+      </nav>
+    </header>
+    <main id="main" tabindex="-1">
+      <h1>Privacy Policy</h1>
+      <p class="muted">Effective date: 21 October 2026</p>
+
+      <p>
+        This notice explains how personal data is handled when you use quitsar at
+        <a href="https://quitsar.com">quitsar.com</a>. It covers the hosted website. If you run the
+        open-source app on your own server, that installation’s operator is responsible for its
+        data.
+      </p>
+      <h2>Who is responsible?</h2>
+      <p>
+        The operator and data controller is <strong>Jan Mederly, Slovakia</strong>. For privacy
+        questions or requests, email
+        <a href="mailto:jan.mederly@gmail.com">jan.mederly@gmail.com</a>.
+      </p>
+      <h2>What data is processed, and why?</h2>
+      <ul>
+        <li>
+          <strong>Google account details:</strong> when you choose Google sign-in, Google supplies
+          your account identifier, verified email address, and display name. We store these to
+          identify your account and keep your library separate from other accounts. We do not
+          receive your Google password, and do not request access to Gmail, Drive, or contacts.
+        </li>
+        <li>
+          <strong>Your study data:</strong> question banks, attached images, answers, progress,
+          schedules, flags, exam attempts, unfinished exams, and preferences are stored in your
+          account so you can study across devices. Avoid uploading confidential information or
+          personal data about other people.
+        </li>
+        <li>
+          <strong>Sign-in activity:</strong> the time of your most recent Google sign-in is stored
+          to apply the inactivity retention policy below. Merely opening an existing session does
+          not reset this date.
+        </li>
+        <li>
+          <strong>Security and connection data:</strong> Cloudflare handles request information such
+          as IP addresses and browser information when delivering and protecting the website. The
+          application uses a hash of the connecting IP for short-lived sign-in rate limits, plus
+          account-based write counters. These protect accounts and limit abuse.
+        </li>
+        <li>
+          <strong>Messages you send us:</strong> we process your email address and message to answer
+          questions and handle privacy or support requests.
+        </li>
+      </ul>
+      <h2>Legal bases</h2>
+      <p>
+        Providing the account and study features you request relies on performance of our service
+        agreement (GDPR Article 6(1)(b)). Security, abuse prevention, and ordinary support rely on
+        our legitimate interests in operating a reliable service (Article 6(1)(f)). Where a legal
+        obligation requires processing, Article 6(1)(c) applies. If we rely on consent for a
+        separate purpose, you may withdraw it without affecting earlier lawful processing. We do not
+        currently use account data for advertising.
+      </p>
+      <h2>Guest mode, cookies, and device storage</h2>
+      <p>
+        In guest mode, your library stays in this browser’s IndexedDB storage. It is not
+        automatically uploaded when you sign in. You can explicitly transfer it by exporting and
+        restoring a backup. The app stores interface preferences and a storage-mode marker in local
+        storage, and caches app files for offline guest use.
+      </p>
+      <p>
+        Google sign-in uses an essential temporary sign-in-state cookie and an essential session
+        cookie. The hosted session cookie is HttpOnly, Secure, and SameSite=Lax. The application
+        contains no advertising cookies, analytics trackers, or remote font requests. Google and
+        Cloudflare handle their own services under their policies.
+      </p>
+      <h2>Who receives data?</h2>
+      <p>
+        <strong>Cloudflare</strong> hosts the website, account API, and D1 database, and processes
+        data needed to deliver and secure them. <strong>Google</strong> authenticates you when you
+        choose Google sign-in. If you email the contact address above, Google’s Gmail service
+        handles that correspondence. We do not sell your personal data. Data may also be disclosed
+        where required by law or necessary to establish, exercise, or defend legal claims.
+      </p>
+      <p>
+        See <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare’s Privacy Policy</a>,
+        <a href="https://www.cloudflare.com/cloudflare-customer-dpa/"
+          >Cloudflare’s data processing terms</a
+        >, and <a href="https://policies.google.com/privacy">Google’s Privacy Policy</a>. These
+        providers may process data outside Slovakia or the EEA. Where required, transfers use an
+        applicable adequacy decision or safeguards such as Standard Contractual Clauses; contact us
+        for information about the safeguards relevant to your data.
+      </p>
+      <h2>How long is data kept?</h2>
+      <ul>
+        <li>
+          <strong>Accounts and study libraries:</strong> kept while you use your account, until you
+          delete it, or until 24 calendar months have passed without a Google sign-in. Automatic
+          cleanup checks expired accounts hourly in bounded batches. An expired account cannot
+          retrieve its old data; signing in after the deadline creates a fresh account.
+        </li>
+        <li>
+          <strong>Existing accounts:</strong> because reliable past sign-in dates were not stored
+          previously, accounts existing when this policy is introduced receive a full 24-month
+          window starting when the retention migration is applied. Later sign-ins reset that window.
+        </li>
+        <li>
+          <strong>Sessions:</strong> expire after seven days. Temporary sign-in states expire after
+          ten minutes, incomplete backup-restore uploads after fifteen minutes, and security rate
+          counters after their one- or ten-minute window. Expired temporary records are removed by
+          periodic cleanup in bounded batches; expiration prevents their normal reuse before
+          physical cleanup finishes.
+        </li>
+        <li>
+          <strong>Recovery copies:</strong> deletion removes live application data. Cloudflare D1
+          point-in-time recovery can retain earlier database copies for up to 30 days (seven days on
+          its Free plan). These copies are not used for normal account access. Any recovery must
+          preserve deletion requests rather than reactivate deleted accounts.
+        </li>
+        <li>
+          <strong>Device copies:</strong> guest libraries and backups you download remain under your
+          control until you remove them or clear browser storage. Deleting an online account does
+          not erase these copies.
+        </li>
+        <li>
+          <strong>Correspondence:</strong> retained only as long as needed to resolve the request
+          and meet applicable legal or accountability requirements.
+        </li>
+      </ul>
+      <h2>Delete an account or exercise your rights</h2>
+      <p>
+        Signed-in users can open <strong>Settings → Account → Delete account</strong>. After
+        confirmation, this removes the live account profile, study records, preferences, staged
+        uploads, and all account sessions. It does not delete your Google account. Signing in again
+        creates a new quitsar account. You can also manage quitsar’s access through your Google
+        account settings.
+      </p>
+      <p>
+        Use <strong>Backup &amp; export</strong> for a copy of your study data. To request access to
+        your other personal data, correction, erasure, restriction, portability where applicable, or
+        to object to processing based on legitimate interests, email
+        <a href="mailto:jan.mederly@gmail.com">jan.mederly@gmail.com</a>. We may need proportionate
+        identity verification. Requests are normally answered within one month; if a lawful
+        extension is needed, we will explain it.
+      </p>
+      <p>
+        You may complain to your local supervisory authority, including the
+        <a href="https://dataprotection.gov.sk/"
+          >Office for Personal Data Protection of the Slovak Republic</a
+        >. We do not use your data to make automated decisions producing legal or similarly
+        significant effects. Study schedules and practice scores are learning aids.
+      </p>
+      <h2>Security and changes</h2>
+      <p>
+        The application uses HTTPS, server-side authorization, account-scoped database access, and
+        hashed session tokens. No online service can guarantee absolute security. We will update
+        this notice when processing changes and make material changes clear before applying a new
+        purpose to existing data. The effective date appears above.
+      </p>
+    </main>
+    <footer class="legal-footer">
+      <a href="/">Back to quitsar</a><a href="mailto:jan.mederly@gmail.com">Contact Jan Mederly</a>
+    </footer>
+  </body>
+</html>

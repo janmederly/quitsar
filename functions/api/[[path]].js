@@ -4,6 +4,7 @@ import { restore } from '../../server/restore.js';
 import { oauthAdmission, oauthCounters, OAUTH_WINDOW } from '../../server/oauth-limit.js';
 export { readBody, validateChanges } from '../../server/records.js';
 import { admitWrite, maintain, API_WINDOW } from '../../server/maintenance.js';
+import { inactiveCutoff } from '../../server/retention.js';
 const encoder = new TextEncoder();
 const fail = (status, message) => {
   throw Object.assign(new Error(message), { status });
@@ -49,9 +50,9 @@ async function userFor(request, env) {
   const token = readCookie(request, 'session');
   if (!token || !env.DB) return null;
   return env.DB.prepare(
-    'SELECT users.id, users.email, users.name FROM sessions JOIN users ON users.id=sessions.user_id WHERE token_hash=? AND expires_at>?'
+    'SELECT users.id, users.email, users.name FROM sessions JOIN users ON users.id=sessions.user_id JOIN account_activity ON account_activity.user_id=users.id WHERE token_hash=? AND expires_at>? AND last_sign_in>?'
   )
-    .bind(await hash(token), Date.now())
+    .bind(await hash(token), Date.now(), inactiveCutoff())
     .first();
 }
 async function auth(request, env, path) {
@@ -75,6 +76,25 @@ async function auth(request, env, path) {
         .bind(await hash(readCookie(request, 'session')))
         .run();
     return json({ ok: true }, 200, { 'Set-Cookie': cookie(request, 'session', '', 0) });
+  }
+  if (path === '/api/auth/delete-account' && request.method === 'POST') {
+    const user = await userFor(request, env);
+    if (!user) fail(401, 'Sign in again before deleting your account.');
+    if (request.headers.get('X-Quitsar-User') !== user.id)
+      fail(409, 'Account changed in another tab. Reload before continuing.');
+    const body = await readBody(request);
+    if (body?.confirmation !== 'DELETE' || body.email !== user.email)
+      fail(400, 'Confirm the current account and type DELETE to continue.');
+    await env.DB.batch([
+      env.DB.prepare('DELETE FROM oauth_states WHERE state_hash=?').bind(
+        await hash(readCookie(request, 'oauth'))
+      ),
+      env.DB.prepare('DELETE FROM users WHERE id=?').bind(user.id)
+    ]);
+    const response = json({ ok: true });
+    response.headers.append('Set-Cookie', cookie(request, 'session', '', 0));
+    response.headers.append('Set-Cookie', cookie(request, 'oauth', '', 0));
+    return response;
   }
   if (!configured(env)) fail(503, 'Google sign-in is not configured.');
   if (url.origin !== new URL(env.APP_ORIGIN).origin)
@@ -166,10 +186,20 @@ async function auth(request, env, path) {
     if (!profile.sub || !profile.email || profile.email_verified !== true)
       fail(401, 'A verified Google email is required.');
     const token = random();
+    const now = Date.now();
     await env.DB.batch([
+      // Signing in after the retention deadline starts a fresh account. It
+      // cannot revive expired data while waiting for the next cleanup batch.
+      env.DB.prepare(
+        'DELETE FROM users WHERE id=? AND id IN (SELECT user_id FROM account_activity WHERE last_sign_in<=?)'
+      ).bind(profile.sub, inactiveCutoff(now)),
       env.DB.prepare(
         'INSERT INTO users (id,email,name,created_at) VALUES (?,?,?,?) ON CONFLICT(id) DO UPDATE SET email=excluded.email,name=excluded.name'
       ).bind(profile.sub, profile.email, profile.name || profile.email, Date.now()),
+      env.DB.prepare('UPDATE account_activity SET last_sign_in=? WHERE user_id=?').bind(
+        now,
+        profile.sub
+      ),
       env.DB.prepare('DELETE FROM sessions WHERE token_hash=?').bind(
         await hash(readCookie(request, 'session'))
       ),
@@ -295,6 +325,8 @@ export async function onRequest({ request, env }) {
         },
         413
       );
+    if (/account_deleted/.test(error.message))
+      return json({ error: 'Your account was deleted. Reload before continuing.' }, 401);
     if (!error.status) console.error('API request failed', error.message);
     return json(
       {

@@ -6,5 +6,5 @@ pages_build_output_dir = "./dist"
 binding = "DB"
 database_name = "quitsar"
 # Replace this placeholder with the ID printed by `wrangler d1 create quitsar`.
-database_id = "00000000-0000-0000-0000-000000000000"
+database_id = "312f4414-acdb-4c12-b8fa-fc4954feab28"
 migrations_dir = "migrations"

@@ -80,6 +80,32 @@ export function validateRecord(store, row) {
     for (const f of ['skipped', 'lastObjectiveCorrect'])
       if (row[f] !== undefined && typeof row[f] !== 'boolean')
         throw new Error(t`states.${f}: expected boolean`);
+    if (row.fsrs !== undefined) {
+      const card = row.fsrs;
+      if (
+        !isRecord(card) ||
+        ![1, 2, 3].includes(card.state) ||
+        !Number.isFinite(card.stability) ||
+        card.stability <= 0 ||
+        !Number.isFinite(card.difficulty) ||
+        card.difficulty < 1 ||
+        card.difficulty > 10 ||
+        [
+          'due',
+          'last_review',
+          'elapsed_days',
+          'scheduled_days',
+          'reps',
+          'lapses',
+          'learning_steps'
+        ].some((key) => !Number.isFinite(card[key]) || card[key] < 0) ||
+        ['reps', 'lapses', 'learning_steps'].some((key) => !Number.isInteger(card[key])) ||
+        card.due !== row.due ||
+        card.last_review !== row.lastReviewed ||
+        card.reps !== row.repetitions
+      )
+        throw new Error(t('Invalid spaced repetition state'));
+    }
   }
   if (store === 'attempts' || store === 'active') {
     if (
@@ -188,12 +214,19 @@ export function validateRecord(store, row) {
         if (!Number.isFinite(row[f]) || row[f] <= 0)
           throw new Error(t`settings.${f}: must be positive`);
       if (
-        row.maximumInterval < row.minimumInterval ||
+        (row.desiredRetention === undefined && row.maximumInterval < row.minimumInterval) ||
         row.maximumInterval > 5256000 ||
         row.multiplier < 1 ||
         row.multiplier > 10
       )
         throw new Error(t('Settings outside supported limits'));
+      if (
+        row.desiredRetention !== undefined &&
+        (!Number.isFinite(row.desiredRetention) ||
+          row.desiredRetention < 70 ||
+          row.desiredRetention > 97)
+      )
+        throw new Error(t('Desired retention must be between 70 and 97 percent.'));
     }
   }
   if (

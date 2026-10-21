@@ -64,7 +64,7 @@ test('invalid deployment URLs are rejected instead of generating wrong canonical
 test('the initial document has readable public content and descriptive metadata without JavaScript', () => {
   assert.equal((source.match(/<h1>/g) || []).length, 1);
   assert.match(source, /<meta\s+name="description"\s+content="[^"]+"/);
-  assert.match(source, /<h2>Your next question/);
+  assert.match(source, /<h2>Ready to study\?/);
   assert.match(source, /practice recall/);
   assert.match(source, /<noscript\b/);
   assert.match(source, /width="41" height="44"/);

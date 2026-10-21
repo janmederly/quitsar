@@ -7,6 +7,7 @@ import {
   showAccount,
   setBeforeAccountChange
 } from './account.js';
+import { ensureDefaultDemo, removeReplacedDemo } from './demo.js';
 import { defaults, keyFor, schedule } from './spaced-repetition.js';
 import { el, button, badge, modal, announce, date, prettyType, icon } from './dom.js';
 import { validateRecord } from './records.js';
@@ -84,7 +85,7 @@ export const ctx = {
         }
       });
     Object.assign(ctx, {
-      banks: valid('banks', banks),
+      banks: await removeReplacedDemo(valid('banks', banks)),
       states: new Map(valid('states', states).map((s) => [s.id, s])),
       attempts: valid('attempts', attempts).sort((a, b) => b.completedAt - a.completedAt),
       history: valid('history', history),
@@ -143,13 +144,7 @@ export const ctx = {
     return el(
       'div',
       { class: 'page-heading' },
-      el(
-        'div',
-        {},
-        el('p', { class: 'eyebrow' }, eyebrow),
-        el('h1', {}, heading),
-        subtitle && el('p', { class: 'subtitle' }, subtitle)
-      ),
+      el('div', {}, el('h1', {}, heading), subtitle && el('p', { class: 'subtitle' }, subtitle)),
       action
     );
   },
@@ -272,16 +267,17 @@ async function home() {
       el(
         'div',
         {},
-        el('p', { class: 'eyebrow' }, t('MAKE ROOM FOR RECALL')),
         el('h2', {}, t('Your next question is a good place to start.')),
         el(
           'p',
           {},
-          pool.length
-            ? t`${pool.length} questions across ${ctx.banks.filter((b) => b.enabled).length} enabled banks. Settle in for a focused session.`
-            : t(
-                'Add a question bank for your course, or try the mathematics, science, and humanities demo.'
-              )
+          ctx.banks.length === 1 && ctx.banks[0].isDefaultDemo
+            ? t('Try 12 high-school biology questions, or import your own subject.')
+            : pool.length
+              ? t`${pool.length} questions across ${ctx.banks.filter((b) => b.enabled).length} enabled banks. Settle in for a focused session.`
+              : t(
+                  'Add a question bank for your course, or try the mathematics, science, and humanities demo.'
+                )
         ),
         el(
           'div',
@@ -291,19 +287,8 @@ async function home() {
             () => ctx.navigate(pool.length ? 'study' : 'banks'),
             'primary'
           ),
+          button(t('Import questions'), () => ctx.navigate('banks'), 'secondary'),
           button(t('Set up an exam'), () => ctx.navigate('exam'), 'secondary')
-        )
-      ),
-      el(
-        'div',
-        { class: 'hero-art', 'aria-hidden': 'true' },
-        el('div', { class: 'art-card back' }, 'x²'),
-        el(
-          'div',
-          { class: 'art-card front' },
-          el('span', {}, t('RECALL · REFLECT · REPEAT')),
-          el('strong', {}, t('A question today.\nConfidence tomorrow.')),
-          el('span', {}, t('✓  One step forward'))
         )
       )
     ),
@@ -326,7 +311,7 @@ async function home() {
       ),
     el(
       'div',
-      { class: 'two-column' },
+      { class: 'two-column home-sections' },
       el(
         'section',
         { class: 'panel' },
@@ -609,6 +594,11 @@ function showError(error) {
 try {
   await initializeAccount();
   await db.openStorage();
+  try {
+    await ensureDefaultDemo();
+  } catch (error) {
+    showError(error);
+  }
   initialized = true;
   await render();
   headerLanguage.disabled = false;

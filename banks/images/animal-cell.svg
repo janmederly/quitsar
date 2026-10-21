@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 350" width="600" height="350">
+  <title>Animal cell: structures A, B, and C</title>
+  <rect width="600" height="350" rx="12" fill="#f4f5f8"/>
+  <ellipse cx="255" cy="170" rx="178" ry="118" fill="#e1e7f5" stroke="#52648d" stroke-width="4"/>
+  <ellipse cx="245" cy="160" rx="58" ry="48" fill="#c7badb" stroke="#776190" stroke-width="3"/>
+  <circle cx="250" cy="160" r="14" fill="#8a739f"/>
+  <g fill="none" stroke="#424957" stroke-width="2">
+    <path d="M294 134 424 65h48"/>
+    <path d="m420 213 36 50h36"/>
+    <path d="m160 210-60 53H55"/>
+  </g>
+  <g fill="#292d38" font-family="sans-serif" font-size="24" font-weight="600">
+    <text x="484" y="73">A</text>
+    <text x="504" y="271">B</text>
+    <text x="30" y="271">C</text>
+  </g>
+  <text x="300" y="328" text-anchor="middle" font-family="sans-serif" font-size="15" fill="#656b78">Animal cell · Not to scale</text>
+</svg>

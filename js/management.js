@@ -1,12 +1,13 @@
 import { t, label, getLanguage, setLanguage } from './i18n.js';
 import * as db from './storage.js';
+import { loadDemoBank, DEMO_ID } from './demo.js';
 import { LIMITS } from './limits.js';
 import { signedIn, localDatabase, usesServerStorage } from './account.js';
 import { el, button, badge, field, modal, date, download, table, prettyType } from './dom.js';
 import { validateBank } from './validation.js';
 import { readAsset, releaseAssets } from './assets.js';
 import { exportBackup, validateBackup, mergePlan } from './transfer.js';
-import { defaults } from './spaced-repetition.js';
+import { showImportFormat } from './import-format.js';
 
 const MAX_JSON = LIMITS.backup;
 async function readJson(file, max = MAX_JSON) {
@@ -82,11 +83,17 @@ async function collectAssets(files, data, old = {}) {
   return assets;
 }
 export function banksView(ctx) {
-  const fileInput = el('input', { type: 'file', accept: '.json', multiple: true });
+  const fileInput = el('input', {
+    type: 'file',
+    accept: '.json',
+    multiple: true,
+    'aria-describedby': 'import-limits'
+  });
   const images = el('input', {
     type: 'file',
     accept: '.svg,.png,.jpg,.jpeg,.gif,.webp',
-    multiple: true
+    multiple: true,
+    'aria-describedby': 'import-limits'
   });
   const report = el('div', { 'aria-live': 'polite' });
   let importing = false;
@@ -203,6 +210,12 @@ export function banksView(ctx) {
                 el('h2', {}, b.title),
                 badge(record.enabled ? t('Enabled') : t('Disabled'))
               ),
+              record.isDefaultDemo &&
+                el(
+                  'p',
+                  { class: 'muted' },
+                  t('Included biology demo. Import your own questions to replace it.')
+                ),
               el('p', {}, b.description || t('No description supplied.')),
               el(
                 'p',
@@ -224,7 +237,7 @@ export function banksView(ctx) {
                 Object.entries(types).map(([t, n]) => badge(`${prettyType(t)}: ${n}`))
               ),
               el('p', { class: 'muted' }, t`Imported ${date(record.importedAt)}`),
-              missing.length &&
+              missing.length > 0 &&
                 el('p', { class: 'notice warning' }, t`Missing images: ${missing.join(', ')}`),
               el(
                 'div',
@@ -292,35 +305,9 @@ export function banksView(ctx) {
   }
   async function loadDemo() {
     report.replaceChildren(el('p', { role: 'status' }, t('Loading included local demo…')));
-    const response = await fetch('./banks/demo.json');
-    if (!response.ok)
-      throw new Error(
-        t('Included demo unavailable. Start the local server from the project root.')
-      );
-    const data = await response.json();
-    const errors = validateBank(data);
-    if (errors.length) throw new Error(errors.join('\n'));
-    const existing = await db.get('banks', data.bank.id);
+    const existing = await db.get('banks', DEMO_ID);
     if (existing && !confirm(t('Reload the demo bank? Study history is preserved.'))) return;
-    const assets = {};
-    // Explicit allowlist: never turn arbitrary imported paths into network requests.
-    for (const path of [
-      'images/annulus.svg',
-      'images/history-timeline.svg',
-      'images/cell-diagram.svg'
-    ]) {
-      const response = await fetch(`./banks/${path}`);
-      if (!response.ok) throw new Error(t`Included image unavailable: ${path}`);
-      assets[path] = await readAsset(await response.blob(), path);
-    }
-    await db.put('banks', {
-      id: data.bank.id,
-      data,
-      assets,
-      enabled: true,
-      importedAt: Date.now(),
-      updatedAt: Date.now()
-    });
+    await db.put('banks', await loadDemoBank());
     await ctx.refresh();
     renderCards();
     report.replaceChildren(
@@ -351,10 +338,15 @@ export function banksView(ctx) {
         );
       }
     },
-    el('h2', {}, t('Bring your own questions')),
+    el(
+      'div',
+      { class: 'section-heading' },
+      el('h2', {}, t('Bring your own questions')),
+      button(t('Format & AI guide'), showImportFormat, 'secondary')
+    ),
     el(
       'p',
-      {},
+      { class: 'limit-note', id: 'import-limits' },
       t(
         'Choose JSON banks (up to 512 KiB) and images (256 KiB each, 512 KiB combined). A saved bank including images must fit in 1 MiB. Account storage: 20 MiB total. You can also drop selected files here.'
       )
@@ -512,7 +504,7 @@ export function toolsView(ctx) {
       el('h2', {}, t('Your browser is your notebook.')),
       el(
         'p',
-        {},
+        { class: 'limit-note' },
         t(
           localDatabase()
             ? 'All study data is saved on this server. Export backups regularly.'
@@ -529,11 +521,11 @@ export function settingsView(ctx) {
   const num = (key, label, hint, min = 1, max = 5256000) => {
     const input = el('input', {
       type: 'number',
-      value: s[key],
+      value: key === 'maximumInterval' ? Math.max(1, Math.floor(s[key] / 1440)) : s[key],
       required: true,
       min,
       max,
-      step: key === 'multiplier' ? '0.1' : '1'
+      step: '1'
     });
     controls[key] = input;
     return field(label, input, hint);
@@ -573,16 +565,16 @@ export function settingsView(ctx) {
         const next = { ...s, id: 'preferences', updatedAt: Date.now() };
         for (const [k, v] of Object.entries(controls))
           next[k] =
-            v.type === 'checkbox' ? v.checked : v.type === 'number' ? Number(v.value) : v.value;
+            v.type === 'checkbox'
+              ? v.checked
+              : v.type === 'number'
+                ? Number(v.value) * (k === 'maximumInterval' ? 1440 : 1)
+                : v.value;
         if (
-          next.maximumInterval < next.minimumInterval ||
           !/^\s*\d+(\.\d+)?(\s*,\s*\d+(\.\d+)?)*\s*$/.test(next.warnings) ||
           next.warnings.split(',').some((n) => Number(n) > 1440)
         ) {
-          ctx.notice(
-            t('Use a maximum ≥ minimum interval and comma-separated warning minutes from 0–1440.'),
-            'error'
-          );
+          ctx.notice(t('Warnings must be comma-separated minutes between 0 and 1440.'), 'error');
           return;
         }
         const languageChanged = next.language !== getLanguage();
@@ -605,22 +597,31 @@ export function settingsView(ctx) {
     el('h2', {}, t('Reading & appearance')),
     field(t('Interface language'), controls.language),
     field(t('Theme'), controls.theme),
-    el('h2', {}, t('Transparent spaced repetition')),
+    el('h2', {}, t('Spaced repetition')),
     el(
       'p',
       {},
       t(
-        'All intervals below are in minutes. Repeat quarters the previous interval; Know multiplies it. Both are clamped to the minimum and maximum.'
+        'Reviews adapt to your answers and the time since your last review. Repeat means you forgot; Know means you recalled the answer. Skipping leaves the schedule unchanged.'
       )
     ),
     el(
       'div',
       { class: 'filter-grid' },
-      num('initialRepeat', t('First Repeat interval'), t('Default: 10 minutes')),
-      num('initialKnow', t('First Know interval'), t('Default: 1 day = 1440 minutes')),
-      num('minimumInterval', t('Minimum interval'), t('Lower bound for every review')),
-      num('multiplier', t('Know interval multiplier'), t('For later Know responses'), 1, 10),
-      num('maximumInterval', t('Maximum interval'), t('Default: 180 days = 259200 minutes'))
+      num(
+        'desiredRetention',
+        t('Desired retention (%)'),
+        t('Default: 90%. Higher values mean more frequent reviews.'),
+        70,
+        97
+      ),
+      num(
+        'maximumInterval',
+        t('Maximum interval (days)'),
+        t('Default: 180 days. Forgotten questions return in 10 minutes.'),
+        1,
+        3650
+      )
     ),
     el('h2', {}, t('Exam defaults')),
     el(
@@ -731,7 +732,9 @@ export function settingsView(ctx) {
     el(
       'p',
       { class: 'muted' },
-      t`Default intervals: Repeat ${defaults.initialRepeat} min · Know ${defaults.initialKnow} min. No Anki or SM-2 compatibility is claimed.`
+      t(
+        'Scheduling uses FSRS with default memory parameters. Existing due dates stay unchanged until you answer again.'
+      )
     )
   );
 }

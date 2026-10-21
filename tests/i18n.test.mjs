@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { t, setLanguage, getLanguage, getLocale, languages } from '../js/i18n.js';
+import english from '../js/locales/en.js';
 import slovak from '../js/locales/sk.js';
 import czech from '../js/locales/cs.js';
 import german from '../js/locales/de.js';
@@ -9,6 +10,32 @@ import french from '../js/locales/fr.js';
 import { validateBank } from '../js/validation.js';
 import { validateBackup } from '../js/transfer.js';
 import { defaults } from '../js/spaced-repetition.js';
+
+test('every language covers the revised English copy and preserves its placeholders', () => {
+  for (const [language, dictionary] of Object.entries({
+    sk: slovak,
+    cs: czech,
+    de: german,
+    es: spanish,
+    fr: french
+  })) {
+    for (const [key, message] of Object.entries(english)) {
+      assert.ok(dictionary[key]?.trim(), `${language}: ${key}`);
+      const placeholders = (value) => new Set(value.match(/\{\d+\}/g) || []);
+      assert.deepEqual(placeholders(dictionary[key]), placeholders(message), `${language}: ${key}`);
+    }
+  }
+});
+
+test('English editorial copy preserves stable keys, interpolation and fallback messages', () => {
+  setLanguage('en');
+  assert.equal(t('A little progress, every day.'), 'Your study space');
+  assert.equal(
+    t`${12} questions across ${2} enabled banks. Settle in for a focused session.`,
+    '12 questions ready to study. Active question banks: 2.'
+  );
+  assert.equal(t('Unknown message'), 'Unknown message');
+});
 
 test('Slovak messages interpolate values without translating imported content', () => {
   setLanguage('sk');

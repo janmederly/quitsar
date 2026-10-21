@@ -10,10 +10,12 @@ Choose browser storage for offline guest study, a local SQLite database for a si
 
 - Open-ended, single-choice, multiple-choice, and image-recognition questions.
 - Filters for banks, topics, subtopics, tags, difficulty, and question type.
-- Due-first or random study, Repeat/Know scheduling, flags, and incorrect/skipped review queues.
+- Topic and new-question study, configurable session sizes, and new-first, random, or difficulty-based practice.
+- A dedicated Review screen with spaced repetition, incorrect answers, flagged questions, and skipped questions.
 - Timed or untimed exams with answer autosave, interrupted-session recovery, and strict or partial scoring.
 - Explanations, option rationales, grouped results, print views, and JSON/CSV exports.
 - Validated bank imports and backup merges, including imported images.
+- Import questions directly from Overview; the import form includes a field-by-field format guide, JSON Schema, downloadable example, and a copyable prompt for your AI tool.
 - English, Slovak, Czech, German, Spanish, and French interfaces, with system/light/dark themes and keyboard navigation.
 
 ## Local development
@@ -26,7 +28,7 @@ For guest mode, start the dependency-free local server:
 npm start
 ```
 
-Open **http://127.0.0.1:8080** and choose **Question banks → Load included demo bank**. Demo content is imported only when requested. Use HTTP rather than opening `index.html` directly: modules, browser storage, and service workers require a suitable origin.
+Open **http://127.0.0.1:8080** to start with the included high-school biology bank. It loads automatically when your library is empty, with 12 questions on cells, genetics, and ecosystems. Importing your own bank replaces this automatic demo; an explicitly loaded demo can stay alongside your material. **Exam simulator** includes a quick quiz, a timed practice exam, and written-answer practice, each with a preview before starting. You can also load the demo explicitly from **Question banks → Try the demo bank**. Use HTTP rather than opening `index.html` directly: modules, browser storage, and service workers require a suitable origin.
 
 Wait for **Offline cache ready** before stopping the server. Later visits can work offline at the same hostname and port in browsers that support service workers. Guest data belongs to that browser profile and origin; switching between `localhost` and `127.0.0.1`, or changing ports, opens a separate store.
 
@@ -102,7 +104,7 @@ In this mode the database is `/data/quitsar.sqlite`. The named volume retains it
 
 ## Architecture
 
-The frontend uses native ES modules and direct DOM rendering, with no UI framework or client runtime dependencies. `index.html` defines the shell, `js/app.js` initializes the account and storage layers and handles hash-based navigation, and screen modules implement study, exams, results, and library management.
+The frontend uses native ES modules and direct DOM rendering, with no UI framework. The FSRS scheduler is vendored locally in `js/vendor/` with its MIT license; it requires no CDN or extra build step. `index.html` defines the shell, `js/app.js` initializes the account and storage layers and handles hash-based navigation, and screen modules implement study, exams, results, and library management.
 
 ```text
 Browser UI
@@ -184,14 +186,14 @@ On startup, `initializeAccount()` checks `/api/auth/session` before `openStorage
 
 All three modes expose six logical collections. In guest mode these are object stores in the browser's `quitsar` IndexedDB database, with records keyed by `id`. In local and account modes they are categories within a SQL `records` table.
 
-| Collection | Stored content                                                                             | Record identity                                             |
-| ---------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
-| `banks`    | Metadata, questions, options, explanations, enabled status, and imported images            | Bank ID                                                     |
-| `states`   | Current question progress: interval, due date, counters, flags, and skipped status         | Bank ID + question ID                                       |
-| `history`  | Response events with question identity, Repeat/Know/skip, timestamp, and study/exam origin | Event ID                                                    |
-| `attempts` | Completed exam snapshots, answers, configuration, and timing                               | Attempt ID                                                  |
-| `settings` | Language, theme, scheduling, and other preferences                                         | `preferences`; guest mode also has a `storage-check` record |
-| `active`   | The unfinished exam, answers, navigation state, and absolute deadline                      | `current`                                                   |
+| Collection | Stored content                                                                                        | Record identity                                             |
+| ---------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `banks`    | Metadata, questions, options, explanations, enabled status, and imported images                       | Bank ID                                                     |
+| `states`   | Current question progress: FSRS memory state, interval, due date, counters, flags, and skipped status | Bank ID + question ID                                       |
+| `history`  | Response events with question identity, Repeat/Know/skip, timestamp, and study/exam origin            | Event ID                                                    |
+| `attempts` | Completed exam snapshots, answers, configuration, and timing                                          | Attempt ID                                                  |
+| `settings` | Language, theme, scheduling, and other preferences                                                    | `preferences`; guest mode also has a `storage-check` record |
+| `active`   | The unfinished exam, answers, navigation state, and absolute deadline                                 | `current`                                                   |
 
 `states` holds the current learning state; `history` records individual response events. Question state deliberately excludes the bank version from its identity so compatible bank updates retain progress. Records also retain version information.
 
@@ -314,7 +316,11 @@ Current limits include 512 KiB per bank JSON, 256 KiB per image, 512 KiB total s
 
 Open-ended questions use self-assessment after revealing the answer. Objective questions use exact correctness to choose Know or Repeat; partial credit is reported separately. Skips record history without advancing the schedule.
 
-The scheduler uses minute-based intervals: the first Repeat defaults to 10 minutes and the first Know to one day. Later Repeat divides the previous interval by four; later Know multiplies it by two. Intervals are clamped to the configured minimum and maximum. This is a simple binary scheduler with configurable defaults.
+Study focuses on topics, new questions, and custom practice sessions (20 questions by default, adjustable up to 10,000). Ordering defaults to New first; Random and difficulty from easy to hard or hard to easy are also available. Due-date ordering belongs to Review. Review opens on questions due now and has separate Incorrect, Flagged, and Skipped groups. Incorrect uses the latest objective answer; answering clears Skipped, while flags stay until manually removed. Groups can overlap and all responses update the same progress. Exam-result review stays restricted to the selected exam’s questions.
+
+Scheduling uses FSRS-6 through vendored `ts-fsrs` 5.4.2 with its supplied default model parameters. Repeat maps to Again; Know maps to Good. There is one 10-minute learning/relearning step, including when an established question is forgotten. Subsequent successful intervals depend on the memory state, elapsed time, and desired retention (default 90%, configurable from 70–97%). Higher retention generally requires more reviews. The maximum interval defaults to 180 days and is edited in days. Intervals preview before answering; fuzz is disabled so previews are deterministic. Personal parameter optimization is not implemented.
+
+Existing v1 backups remain supported. Existing due dates are not bulk-rescheduled. On the next non-skip answer, a legacy state initializes an approximate FSRS memory state from its prior interval and last review, with neutral difficulty. Flags, skips, counters, and history are retained. FSRS memory state is stored as JSON-safe numeric timestamps inside the existing question state and included in normal backups. Legacy first-interval, minimum-interval, and multiplier preference fields remain in stored records for backup compatibility but no longer control scheduling. Scheduling works offline for guests; account and local-database writes retain their connection requirements.
 
 Strict scoring awards one point only when the selected set exactly matches the correct set. Multiple-select partial credit is `clamp((selected correct − selected incorrect) / total correct, 0, 1)`. Unanswered objective questions remain in the score denominator; open-ended responses are assessed separately.
 

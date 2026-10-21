@@ -1,13 +1,27 @@
 // English source messages are stable translation keys. User content is never translated.
 export default {
+  'Try 12 high-school biology questions, or import your own subject.':
+    'Probieren Sie 12 Biologiefragen auf Schulniveau aus oder importieren Sie Ihr eigenes Fach.',
+  'Included biology demo. Import your own questions to replace it.':
+    'Enthaltene Biologie-Demo. Sie wird beim Import eigener Fragen ersetzt.',
+  'Try a biology exam': 'Eine Biologieprüfung ausprobieren',
+  'Choose a practice exam, or set up your own below.':
+    'Wählen Sie eine Übungsprüfung oder richten Sie unten eine eigene ein.',
+  'Quick quiz': 'Kurzes Quiz',
+  '5 questions · No timer': '5 Fragen · Ohne Timer',
+  'Timed practice': 'Übung mit Zeitlimit',
+  '8 questions · 10 minutes': '8 Fragen · 10 Minuten',
+  'Explain it yourself': 'Mit eigenen Worten erklären',
+  '3 written answers · No timer': '3 schriftliche Antworten · Ohne Timer',
+  'Preview exam: {0}': 'Prüfungsvorschau: {0}',
+
   'Local database · single user': 'Lokale Datenbank · ein Benutzer',
   'Saved on this server. No sign-in required.':
     'Auf diesem Server gespeichert. Keine Anmeldung erforderlich.',
   'Local database unavailable. Start the local server and try again.':
     'Lokale Datenbank nicht verfügbar. Starten Sie den lokalen Server und versuchen Sie es erneut.',
-  '◉ Local database · Server connection required':
-    '◉ Lokale Datenbank · Serververbindung erforderlich',
-  '● Saved to the local database': '● In der lokalen Datenbank gespeichert',
+  '◉ Local database · Server connection required': 'Serverspeicher · Verbindung erforderlich',
+  '● Saved to the local database': 'Auf diesem Server gespeichert',
   'All study data is saved on this server. Export backups regularly.':
     'Alle Lerndaten werden auf diesem Server gespeichert. Exportieren Sie regelmäßig Sicherungen.',
   'Saved to the local database.': 'In der lokalen Datenbank gespeichert.',
@@ -26,19 +40,19 @@ export default {
   Settings: 'Einstellungen',
   Dismiss: 'Schließen',
   'YOUR STUDY SPACE': 'IHR LERNBEREICH',
-  'A little progress, every day.': 'Jeden Tag ein kleiner Fortschritt.',
+  'A little progress, every day.': 'Ihr Lernbereich',
   'Study any subject. Build understanding. Test your knowledge.':
-    'Lernen Sie jedes Fach. Verstehen Sie Zusammenhänge. Testen Sie Ihr Wissen.',
-  '● Saved to your account': '● In Ihrem Konto gespeichert',
-  '● All data on this device': '● Alle Daten auf diesem Gerät',
+    'Üben Sie Fragen, gehen Sie Fehler durch oder starten Sie eine Übungsprüfung.',
+  '● Saved to your account': 'In Ihrem Konto gespeichert',
+  '● All data on this device': 'In diesem Browser gespeichert',
   'MAKE ROOM FOR RECALL': 'ZEIT ZUM WIEDERHOLEN',
-  'Your next question is a good place to start.': 'Die nächste Frage ist ein guter Anfang.',
+  'Your next question is a good place to start.': 'Bereit zum Lernen?',
   '{0} questions across {1} enabled banks. Settle in for a focused session.':
-    '{0} Fragen in {1} aktivierten Fragenbanken. Zeit für konzentriertes Lernen.',
+    'Fragen zum Lernen: {0}. Aktive Fragenbanken: {1}.',
   'Add a question bank for your course, or try the mathematics, science, and humanities demo.':
-    'Fügen Sie eine Fragenbank für Ihren Kurs hinzu oder testen Sie die Demo zu Mathematik, Natur- und Geisteswissenschaften.',
-  'Start studying →': 'Lernen starten →',
-  'Explore question banks →': 'Fragenbanken entdecken →',
+    'Fügen Sie eigene Fragen hinzu oder probieren Sie die Demo aus.',
+  'Start studying →': 'Lernen starten',
+  'Explore question banks →': 'Fragen hinzufügen',
   'Set up an exam': 'Prüfung einrichten',
   'RECALL · REFLECT · REPEAT': 'ERINNERN · NACHDENKEN · WIEDERHOLEN',
   'A question today.\nConfidence tomorrow.': 'Heute eine Frage.\nMorgen mehr Sicherheit.',
@@ -57,33 +71,33 @@ export default {
   'Resume exam': 'Prüfung fortsetzen',
   'Discard saved exam': 'Gespeicherte Prüfung verwerfen',
   'Your question banks': 'Ihre Fragenbanken',
-  'Manage banks →': 'Fragenbanken verwalten →',
+  'Manage banks →': 'Fragenbanken verwalten',
   '{0} questions · {1} topics': '{0} Fragen · {1} Themen',
   Enabled: 'Aktiviert',
   Disabled: 'Deaktiviert',
-  'A fresh start': 'Ein neuer Anfang',
+  'A fresh start': 'Noch keine Fragenbanken',
   'Import a JSON bank to build your personal study library.':
-    'Importieren Sie eine JSON-Fragenbank, um Ihre persönliche Lernbibliothek aufzubauen.',
+    'Fügen Sie eine Fragenbank hinzu oder probieren Sie die Demo aus.',
   'Add a bank': 'Fragenbank hinzufügen',
-  'Choose your pace': 'Wählen Sie Ihr Tempo',
-  'Focused review': 'Gezielt wiederholen',
+  'Choose your pace': 'Weiterlernen',
+  'Focused review': 'Fragen wiederholen',
   'Return to due, flagged, or missed questions.':
-    'Kehren Sie zu fälligen, markierten oder falsch beantworteten Fragen zurück.',
-  'Review →': 'Wiederholen →',
-  'Exam rehearsal': 'Generalprobe für die Prüfung',
+    'Wiederholen Sie fällige, markierte oder falsch beantwortete Fragen.',
+  'Review →': 'Wiederholen',
+  'Exam rehearsal': 'Übungsprüfung',
   'A timed session with detailed feedback.':
-    'Eine zeitlich begrenzte Sitzung mit ausführlichem Feedback.',
-  'Configure →': 'Einrichten →',
+    'Wählen Sie Fragen aus und stellen Sie bei Bedarf einen Timer ein.',
+  'Configure →': 'Prüfung einrichten',
   'Your answers, schedules, and results are saved to your account. Export a backup to keep a second copy.':
     'Ihre Antworten, Wiederholungspläne und Ergebnisse werden in Ihrem Konto gespeichert. Exportieren Sie eine Sicherung als zweite Kopie.',
   'Your answers, schedules, and results stay in this browser. Export a backup to keep a second copy.':
     'Ihre Antworten, Wiederholungspläne und Ergebnisse bleiben in diesem Browser. Exportieren Sie eine Sicherung als zweite Kopie.',
   'Discard this interrupted exam? Completed results and study history are kept.':
     'Diese unterbrochene Prüfung verwerfen? Abgeschlossene Ergebnisse und Lernverlauf bleiben erhalten.',
-  'Loading local data…': 'Lokale Daten werden geladen…',
+  'Loading local data…': 'Ihre Daten werden geladen…',
   'Help & keyboard shortcuts': 'Hilfe & Tastenkürzel',
   'Guests save in this browser; signed-in users save to their account. Import banks in Question banks, choose Study for immediate feedback, or configure an Exam. Back up regularly through Backup & export.':
-    'Gäste speichern in diesem Browser, angemeldete Nutzer in ihrem Konto. Importieren Sie Fragenbanken unter Fragenbanken, wählen Sie Lernen für sofortiges Feedback oder richten Sie eine Prüfung ein. Sichern Sie Ihre Daten regelmäßig unter Sicherung & Export.',
+    'Fügen Sie Ihre Fragen unter Fragenbanken hinzu. Wählen Sie Lernen für Rückmeldung nach jeder Antwort oder Prüfungssimulator für eine Übungsprüfung. Gäste speichern im Browser, angemeldete Nutzer in ihrem Konto. Erstellen Sie eine Kopie unter Sicherung & Export.',
   'Open this help': 'Diese Hilfe öffnen',
   'Next / previous question': 'Nächste / vorherige Frage',
   'Flag / unflag current question': 'Aktuelle Frage markieren / Markierung entfernen',
@@ -99,12 +113,12 @@ export default {
     'Gäste können offline lernen, sobald der App-Cache bereit ist. Angemeldete Konten speichern in Cloudflare und benötigen eine Verbindung. Gast- und Kontobibliotheken bleiben getrennt; übertragen Sie Daten mit Sicherungen. Wählen Sie Bilddateien ausdrücklich aus. Das Löschen der Websitedaten im Browser löscht die Gastbibliothek.',
   'Something went wrong. Your saved data is still in this browser.':
     'Ein Fehler ist aufgetreten. Ihre gespeicherten Daten befinden sich weiterhin in diesem Browser.',
-  '◉ Account storage · Connection required': '◉ Kontospeicher · Verbindung erforderlich',
-  '◉ Local storage · Offline cache ready': '◉ Lokaler Speicher · Offline-Cache bereit',
+  '◉ Account storage · Connection required': 'Kontospeicher · Internet erforderlich',
+  '◉ Local storage · Offline cache ready': 'Im Browser gespeichert · Offline verfügbar',
   '◉ Local storage · Offline cache unavailable':
-    '◉ Lokaler Speicher · Offline-Cache nicht verfügbar',
+    'Im Browser gespeichert · Offlinezugriff nicht verfügbar',
   '◉ Local storage · Keep local server running':
-    '◉ Lokaler Speicher · Lokalen Server weiterlaufen lassen',
+    'Im Browser gespeichert · Lokalen Server laufen lassen',
   'Study storage could not be opened': 'Lernspeicher konnte nicht geöffnet werden',
   'Try again': 'Erneut versuchen',
   Never: 'Nie',
@@ -113,9 +127,9 @@ export default {
   'Multiple choice': 'Mehrfachauswahl',
   'Image recognition': 'Bilderkennung',
   'INTERRUPTED SESSION': 'UNTERBROCHENE SITZUNG',
-  'Pick up where you left off.': 'Machen Sie dort weiter, wo Sie aufgehört haben.',
+  'Pick up where you left off.': 'Prüfung fortsetzen',
   'Your saved answers are here. Timed sessions retain the original deadline.':
-    'Ihre gespeicherten Antworten sind hier. Bei zeitlich begrenzten Sitzungen gilt die ursprüngliche Abgabefrist.',
+    'Ihre Antworten sind gespeichert. Wenn Sie einen Timer eingestellt haben, gilt weiterhin die ursprüngliche Endzeit.',
   '{0} questions · started {1}': '{0} Fragen · begonnen am {1}',
   'Discard exam': 'Prüfung verwerfen',
   'Discard the interrupted exam and its unsubmitted answers?':
@@ -134,13 +148,13 @@ export default {
     'Zeitlimit: {0} Minuten. Es läuft auch bei geschlossener Seite weiter.',
   'Untimed session': 'Sitzung ohne Zeitlimit',
   'Scoring: strict all-or-nothing and bounded partial credit. Open-ended answers are self-assessed separately.':
-    'Bewertung: streng nach dem Alles-oder-nichts-Prinzip und mit begrenzten Teilpunkten. Offene Antworten werden separat selbst bewertet.',
+    'Die strenge Bewertung gibt einen Punkt für eine vollständig richtige Antwort. Bei Teilpunkten gibt es bis zu einen Punkt. Offene Antworten bewerten Sie selbst.',
   'Explanations appear after final submission.':
     'Erklärungen erscheinen nach der endgültigen Abgabe.',
   'Practice setting: explanations can be revealed after locking an individual answer.':
-    'Übungsmodus: Erklärungen können nach dem Sperren einer einzelnen Antwort angezeigt werden.',
+    'Nach dem Sperren einer Antwort können Sie ihre Erklärung anzeigen.',
   'Start exam': 'Prüfung starten',
-  'Choose your question pool': 'Fragenpool auswählen',
+  'Choose your question pool': 'Fragen auswählen',
   'Clear filters': 'Filter zurücksetzen',
   'Session settings': 'Sitzungseinstellungen',
   'Number of questions': 'Anzahl der Fragen',
@@ -148,17 +162,15 @@ export default {
   'Timer warnings (minutes)': 'Zeitwarnungen (Minuten)',
   'Score display': 'Punkteanzeige',
   'Random question order': 'Zufällige Fragenreihenfolge',
-  'Allow repeats when count exceeds eligible questions':
-    'Wiederholungen erlauben, wenn die Anzahl die verfügbaren Fragen übersteigt',
+  'Allow repeats when count exceeds eligible questions': 'Wiederholte Fragen bei Bedarf zulassen',
   'Include open-ended self-assessment': 'Selbstbewertung offener Fragen einbeziehen',
   'Use countdown timer': 'Countdown verwenden',
-  'Allow answer changes before final submission':
-    'Antwortänderungen vor der endgültigen Abgabe erlauben',
+  'Allow answer changes before final submission': 'Änderungen an Antworten vor der Abgabe zulassen',
   'Hide explanations until final submission': 'Erklärungen bis zur endgültigen Abgabe ausblenden',
-  'Preview exam →': 'Prüfungsvorschau →',
+  'Preview exam →': 'Prüfungsvorschau',
   'PRACTICE WITH PURPOSE': 'MIT ZIEL ÜBEN',
   'Create a rehearsal that fits your exam. Your progress is saved as you go.':
-    'Gestalten Sie eine Übung passend zu Ihrer Prüfung. Ihr Fortschritt wird laufend gespeichert.',
+    'Wählen Sie Fragen und Zeitlimit aus. Ihre Antworten werden laufend gespeichert.',
   'Saving to your account…': 'Wird in Ihrem Konto gespeichert…',
   'Saving locally…': 'Wird lokal gespeichert…',
   '✓ Progress saved to your account': '✓ Fortschritt in Ihrem Konto gespeichert',
@@ -215,7 +227,7 @@ export default {
   'Question types': 'Fragetypen',
   'Source title': 'Quellentitel',
   'Empty selections include all. Use Ctrl/Cmd or Shift to select several; use Clear filters to reset.':
-    'Eine leere Auswahl schließt alles ein. Nutzen Sie Strg/Cmd oder Umschalt für eine Mehrfachauswahl und Filter zurücksetzen zum Zurücksetzen.',
+    'Ein leerer Filter schließt alles ein. Halten Sie Strg, Cmd oder die Umschalttaste gedrückt, um mehrere Optionen auszuwählen.',
   '{0}: file exceeds {1} MiB': '{0}: Datei überschreitet {1} MiB',
   '{0}: malformed JSON ({1})': '{0}: fehlerhaftes JSON ({1})',
   'No description': 'Keine Beschreibung',
@@ -266,13 +278,13 @@ export default {
   Delete: 'Löschen',
   'Delete bank {0} and its attached images? Study history and completed exam snapshots are retained. Export a full backup first to preserve the bank.':
     'Fragenbank {0} und ihre angehängten Bilder löschen? Lernverlauf und Abbilder abgeschlossener Prüfungen bleiben erhalten. Exportieren Sie zuerst eine vollständige Sicherung, um die Fragenbank aufzubewahren.',
-  'Attach / replace local images': 'Lokale Bilder anhängen / ersetzen',
+  'Attach / replace local images': 'Bilder hinzufügen oder ersetzen',
   'Choose referenced image files explicitly. Basenames must be unique; matching paths are mapped from the bank.':
-    'Wählen Sie die referenzierten Bilddateien ausdrücklich aus. Dateinamen müssen eindeutig sein; passende Pfade werden aus der Fragenbank zugeordnet.',
-  'Your library starts here.': 'Hier beginnt Ihre Bibliothek.',
+    'Wählen Sie die in dieser Fragenbank aufgeführten Bilder aus. Jeder Dateiname muss eindeutig sein.',
+  'Your library starts here.': 'Noch keine Fragenbanken',
   'Import a bank or load the included demo. Nothing is loaded automatically.':
-    'Importieren Sie eine Fragenbank oder laden Sie die enthaltene Demo. Es wird nichts automatisch geladen.',
-  'Loading included local demo…': 'Enthaltene lokale Demo wird geladen…',
+    'Importieren Sie eigene Fragen oder probieren Sie die Demo aus.',
+  'Loading included local demo…': 'Demo wird geladen…',
   'Included demo unavailable. Start the local server from the project root.':
     'Enthaltene Demo nicht verfügbar. Starten Sie den lokalen Server im Projektverzeichnis.',
   'Reload the demo bank? Study history is preserved.':
@@ -281,20 +293,18 @@ export default {
   'Demo saved to your account with all images.':
     'Demo mit allen Bildern in Ihrem Konto gespeichert.',
   'Demo saved locally with all images.': 'Demo mit allen Bildern lokal gespeichert.',
-  'Bring your own questions': 'Bringen Sie Ihre eigenen Fragen mit',
+  'Bring your own questions': 'Fragen importieren',
   'Choose JSON banks (up to 512 KiB) and images (256 KiB each, 512 KiB combined). A saved bank including images must fit in 1 MiB. Account storage: 20 MiB total. You can also drop selected files here.':
-    'Wählen Sie JSON-Fragenbanken (bis 512 KiB) und Bilder (je 256 KiB, zusammen 512 KiB). Eine gespeicherte Fragenbank mit Bildern darf höchstens 1 MiB groß sein. Kontospeicher: insgesamt 20 MiB. Sie können ausgewählte Dateien auch hierher ziehen.',
+    'Wählen Sie JSON-Fragenbanken und ihre Bilder aus oder ziehen Sie sie hierher. Grenzen: 512 KiB pro Fragenbank; 256 KiB pro Bild, insgesamt 512 KiB für alle Bilder. Eine Fragenbank mit Bildern darf höchstens 1 MiB groß sein. Konten haben 20 MiB Speicherplatz.',
   'Question bank JSON files': 'JSON-Dateien mit Fragenbanken',
   'Related image files (optional)': 'Zugehörige Bilddateien (optional)',
-  'Validate & import': 'Prüfen & importieren',
+  'Validate & import': 'Fragen importieren',
   'Select at least one bank JSON file.': 'Wählen Sie mindestens eine JSON-Fragenbankdatei aus.',
-  'Load included demo bank': 'Enthaltene Demo-Fragenbank laden',
+  'Load included demo bank': 'Demo-Fragenbank ausprobieren',
   'YOUR LIBRARY': 'IHRE BIBLIOTHEK',
-  'Your curriculum, saved privately to your account.':
-    'Ihr Lernstoff, privat in Ihrem Konto gespeichert.',
-  'Your curriculum, stored only in this browser.':
-    'Ihr Lernstoff, nur in diesem Browser gespeichert.',
-  'Confirm merge': 'Zusammenführen bestätigen',
+  'Your curriculum, saved privately to your account.': 'Ihre Fragen, in Ihrem Konto gespeichert.',
+  'Your curriculum, stored only in this browser.': 'Ihre Fragen, in diesem Browser gespeichert.',
+  'Confirm merge': 'Sicherung wiederherstellen',
   'Restore complete. Records merged into your account.':
     'Wiederherstellung abgeschlossen. Datensätze in Ihr Konto zusammengeführt.',
   'Restore complete. Records merged into local storage.':
@@ -302,7 +312,7 @@ export default {
   'Choose a backup or study-data JSON file.':
     'Wählen Sie eine Sicherungs- oder Lerndaten-JSON-Datei aus.',
   'Checking backup…': 'Sicherung wird geprüft…',
-  'Ready to merge': 'Bereit zum Zusammenführen',
+  'Ready to merge': 'Sicherung prüfen',
   Action: 'Aktion',
   Records: 'Datensätze',
   Add: 'Hinzufügen',
@@ -310,38 +320,38 @@ export default {
   'Skip existing / older duplicates': 'Vorhandene / ältere Duplikate überspringen',
   'Existing bank identities kept': 'Bestehende Fragenbankidentitäten bleiben erhalten',
   'Nothing changes until you confirm. Bank conflicts keep the current bank; import the bank JSON separately to explicitly update it. States, settings and attempts use the newest timestamp. History merges by event ID. Existing interrupted exams are kept. No records are deleted.':
-    'Bis zur Bestätigung ändert sich nichts. Bei Fragenbankkonflikten bleibt die aktuelle Fragenbank erhalten; importieren Sie die Fragenbank-JSON separat für eine ausdrückliche Aktualisierung. Zustände, Einstellungen und Versuche verwenden den neuesten Zeitstempel. Der Verlauf wird anhand der Ereignis-ID zusammengeführt. Bestehende unterbrochene Prüfungen bleiben erhalten. Keine Datensätze werden gelöscht.',
+    'Erst nach Ihrer Bestätigung wird etwas geändert. Bestehende Fragenbanken und die laufende Prüfung bleiben erhalten. Um eine Fragenbank zu aktualisieren, importieren Sie ihre JSON-Datei separat. Für Lernfortschritt, Einstellungen und Ergebnisse gilt die neuere Version. Verlaufseinträge werden anhand ihrer ID zusammengeführt. Es werden keine Einträge gelöscht.',
   'KEEP A SECOND COPY': 'EINE ZWEITE KOPIE AUFBEWAHREN',
   'Downloads happen only when you ask. Choose their destination in your browser.':
-    'Downloads erfolgen nur auf Ihre Anforderung. Wählen Sie den Speicherort in Ihrem Browser.',
+    'Laden Sie eine Kopie Ihrer Daten herunter oder stellen Sie eine Sicherung wieder her.',
   'Export your data': 'Ihre Daten exportieren',
   'Full backups include banks, sanitized attached images, study history, schedules, flags, results, settings and any interrupted exam. Study exports include history and schedules only.':
-    'Vollständige Sicherungen enthalten Fragenbanken, bereinigte angehängte Bilder, Lernverlauf, Wiederholungspläne, Markierungen, Ergebnisse, Einstellungen und unterbrochene Prüfungen. Lernexporte enthalten nur Verlauf und Wiederholungspläne.',
+    'Eine vollständige Sicherung enthält Fragenbanken, Bilder, Lernfortschritt, Ergebnisse, Einstellungen und eine laufende Prüfung. Ein Export des Lernverlaufs enthält nur den Verlauf und den Wiederholungsplan.',
   'Download full backup': 'Vollständige Sicherung herunterladen',
   'Download study history': 'Lernverlauf herunterladen',
   'Export an exam attempt': 'Prüfungsversuch exportieren',
   'Restore a backup': 'Sicherung wiederherstellen',
   'Backup or study-data JSON': 'Sicherungs- oder Lerndaten-JSON',
-  'Validate & preview merge': 'Prüfen & Zusammenführung ansehen',
-  'Your browser is your notebook.': 'Ihr Browser ist Ihr Notizbuch.',
+  'Validate & preview merge': 'Wiederherstellung prüfen',
+  'Your browser is your notebook.': 'Wo deine Daten gespeichert werden',
   'Guest libraries belong to this browser and origin. Account libraries are available after signing in on another device and need a connection. Guest and account data are separate. Download backups regularly. Bank-only JSON exports omit images; full backups include them. Backup restores upload in smaller parts and merge atomically, up to 24 MiB or 150,000 records.':
-    'Gastbibliotheken gehören zu diesem Browser und dieser Herkunft. Kontobibliotheken sind nach Anmeldung auf anderen Geräten verfügbar und benötigen eine Verbindung. Gast- und Kontodaten sind getrennt. Laden Sie regelmäßig Sicherungen herunter. Reine Fragenbank-JSON-Exporte enthalten keine Bilder; vollständige Sicherungen enthalten sie. Sicherungen werden in kleineren Teilen hochgeladen und atomar zusammengeführt, bis zu 24 MiB oder 150.000 Datensätze.',
+    'Gastdaten bleiben in diesem Browser auf dieser Website. Melden Sie sich an, um auf anderen Geräten auf Kontodaten zuzugreifen; dafür brauchen Sie Internet. Gast- und Kontobibliotheken bleiben getrennt. Sichern Sie Ihre Daten regelmäßig. Fragenbank-Exporte als JSON enthalten keine Bilder, vollständige Sicherungen schon. Bei der Wiederherstellung werden Daten in Teilen hochgeladen und gemeinsam übernommen, bis zu 24 MiB oder 150.000 Einträge.',
   'Use a maximum ≥ minimum interval and comma-separated warning minutes from 0–1440.':
-    'Verwenden Sie ein maximales Intervall ≥ minimales Intervall und kommagetrennte Warnminuten von 0–1440.',
+    'Das Höchstintervall muss mindestens so groß wie das Mindestintervall sein. Geben Sie Warnzeiten zwischen 0 und 1440 Minuten ein, durch Kommas getrennt.',
   'Preferences saved to your account.': 'Einstellungen in Ihrem Konto gespeichert.',
   'Preferences saved locally.': 'Einstellungen lokal gespeichert.',
-  'Reading & appearance': 'Lesen & Darstellung',
+  'Reading & appearance': 'Sprache & Aussehen',
   Theme: 'Design',
-  'Transparent spaced repetition': 'Nachvollziehbare verteilte Wiederholung',
+  'Transparent spaced repetition': 'Wiederholungsplan',
   'All intervals below are in minutes. Repeat quarters the previous interval; Know multiplies it. Both are clamped to the minimum and maximum.':
-    'Alle folgenden Intervalle sind in Minuten. Wiederholen viertelt das vorherige Intervall; Gewusst multipliziert es. Beide werden auf Minimum und Maximum begrenzt.',
-  'First Repeat interval': 'Erstes Intervall für Wiederholen',
+    'Die Intervalle sind in Minuten angegeben. Wiederholen verkürzt das bisherige Intervall auf ein Viertel. Gewusst nutzt den Multiplikator unten. Beide Intervalle bleiben innerhalb Ihrer Mindest- und Höchstwerte.',
+  'First Repeat interval': 'Erste Wiederholung nach Wiederholen',
   'Default: 10 minutes': 'Standard: 10 Minuten',
-  'First Know interval': 'Erstes Intervall für Gewusst',
+  'First Know interval': 'Erste Wiederholung nach Gewusst',
   'Default: 1 day = 1440 minutes': 'Standard: 1 Tag = 1440 Minuten',
   'Minimum interval': 'Minimales Intervall',
   'Lower bound for every review': 'Untergrenze für jede Wiederholung',
-  'Know interval multiplier': 'Intervallmultiplikator für Gewusst',
+  'Know interval multiplier': 'Multiplikator nach Gewusst',
   'For later Know responses': 'Für spätere Gewusst-Antworten',
   'Maximum interval': 'Maximales Intervall',
   'Default: 180 days = 259200 minutes': 'Standard: 180 Tage = 259200 Minuten',
@@ -367,31 +377,32 @@ export default {
   'Selected account data cleared.': 'Ausgewählte Kontodaten gelöscht.',
   'Selected local data cleared.': 'Ausgewählte lokale Daten gelöscht.',
   'MAKE IT YOURS': 'GESTALTEN SIE IHREN LERNBEREICH',
-  'A comfortable space for long study sessions.': 'Ein angenehmer Ort für lange Lernsitzungen.',
+  'A comfortable space for long study sessions.':
+    'Passen Sie das Aussehen, den Wiederholungsplan und die Prüfungsvorgaben an.',
   'Storage & privacy': 'Speicher & Datenschutz',
   'Guest data stays in this browser. Account data is saved privately online and requires an internet connection. To move guest data to your account, download a backup, sign in, and restore it. Google is used for sign-in. No analytics.':
-    'Gastdaten bleiben in diesem Browser. Kontodaten werden privat online gespeichert und erfordern eine Internetverbindung. Um Gastdaten in Ihr Konto zu übertragen, laden Sie eine Sicherung herunter, melden Sie sich an und stellen Sie die Sicherung wieder her. Google wird zur Anmeldung verwendet. Keine Analyseverfolgung.',
-  'Request persistent browser storage': 'Dauerhaften Browserspeicher anfordern',
+    'Gastdaten bleiben in diesem Browser. Kontodaten werden privat online gespeichert und brauchen Internet. Um Gastdaten in Ihr Konto zu übertragen, laden Sie eine Sicherung herunter, melden Sie sich mit Google an und stellen Sie sie wieder her. Keine Nutzungsanalyse.',
+  'Request persistent browser storage': 'Dauerhafte Speicherung anfragen',
   'Browser granted persistent storage. Keep backups too.':
-    'Der Browser hat dauerhaften Speicher gewährt. Bewahren Sie auch Sicherungen auf.',
+    'Ihr Browser hat der dauerhaften Speicherung zugestimmt. Sichern Sie Ihre Daten trotzdem regelmäßig.',
   'Browser did not grant persistence. Downloads remain your reliable backup.':
-    'Der Browser hat keinen dauerhaften Speicher gewährt. Downloads bleiben Ihre zuverlässige Sicherung.',
+    'Ihr Browser konnte die dauerhafte Speicherung nicht zusichern. Laden Sie eine Sicherung herunter, um eine Kopie zu behalten.',
   'Clear selected data': 'Ausgewählte Daten löschen',
   'Clearing banks retains history and exam question snapshots. Clearing study data does not change completed exam results.':
-    'Das Löschen von Fragenbanken erhält Verlauf und Prüfungsfragenabbilder. Das Löschen von Lerndaten ändert abgeschlossene Prüfungsergebnisse nicht.',
+    'Wenn Sie Fragenbanken entfernen, bleiben Ihr Lernverlauf und die in abgeschlossenen Prüfungen gespeicherten Fragen erhalten. Das Löschen des Lernverlaufs ändert keine abgeschlossenen Prüfungsergebnisse.',
   'Clear study history': 'Lernverlauf löschen',
   'Clear attempts': 'Versuche löschen',
   'Clear imported banks': 'Importierte Fragenbanken löschen',
   'Default intervals: Repeat {0} min · Know {1} min. No Anki or SM-2 compatibility is claimed.':
-    'Standardintervalle: Wiederholen {0} Min. · Gewusst {1} Min. Eine Kompatibilität mit Anki oder SM-2 wird nicht zugesichert.',
+    'Standardintervalle: Wiederholen {0} Min. · Gewusst {1} Min. Diese App nutzt einen eigenen Wiederholungsplan.',
   'Source & reference': 'Quelle & Referenz',
   'Image unavailable: {0}. Select this related image in Banks → Attach images. You can continue with the text.':
     'Bild nicht verfügbar: {0}. Wählen Sie dieses zugehörige Bild unter Fragenbanken → Bilder anhängen. Sie können mit dem Text fortfahren.',
   'Your written answer': 'Ihre schriftliche Antwort',
   'No written answer.': 'Keine schriftliche Antwort.',
-  'Your answer (optional · self-assessed)': 'Ihre Antwort (optional · selbst bewertet)',
+  'Your answer (optional · self-assessed)': 'Ihre Antwort (optional; Sie bewerten sie selbst)',
   'Official answer': 'Musterantwort',
-  'Accepted aliases: {0}': 'Akzeptierte Alternativen: {0}',
+  'Accepted aliases: {0}': 'Auch akzeptiert: {0}',
   Explanation: 'Erklärung',
   'Select all correct answers': 'Alle richtigen Antworten auswählen',
   'Select one answer': 'Eine Antwort auswählen',
@@ -405,29 +416,30 @@ export default {
   'Strict: {0}/1 · Partial: {1}/1': 'Streng: {0}/1 · Teilpunkte: {1}/1',
   'REFLECT & REFINE': 'NACHDENKEN & VERBESSERN',
   'See what you know, and where to return next.':
-    'Erkennen Sie, was Sie wissen und was Sie als Nächstes wiederholen sollten.',
+    'Sehen Sie sich frühere Prüfungen an und verfolgen Sie Ihren Lernfortschritt.',
   'Completed exams': 'Abgeschlossene Prüfungen',
-  'Objective responses': 'Objektiv bewertete Antworten',
-  'Strict accuracy': 'Strenge Trefferquote',
+  'Objective responses': 'Bewertete Antworten',
+  'Strict accuracy': 'Vollständig richtige Antworten',
   Completed: 'Abgeschlossen',
   Strict: 'Streng',
   Partial: 'Teilpunkte',
   Review: 'Wiederholung',
   'View results': 'Ergebnisse ansehen',
-  'Your first exam result will appear here.': 'Ihr erstes Prüfungsergebnis erscheint hier.',
+  'Your first exam result will appear here.':
+    'Noch keine abgeschlossenen Prüfungen. Probieren Sie eine Übungsprüfung aus, um hier Ihre Ergebnisse zu sehen.',
   'Configure an exam': 'Eine Prüfung einrichten',
   'Recent study activity': 'Letzte Lernaktivität',
   Day: 'Tag',
   Responses: 'Antworten',
   'Study sessions and objective exam responses will be counted here.':
-    'Lernsitzungen und objektiv bewertete Prüfungsantworten werden hier gezählt.',
+    'Hier erscheinen Ihre Antworten aus Lerneinheiten und bewertete Prüfungsantworten.',
   'Total questions': 'Fragen insgesamt',
-  'Objective / open ended': 'Objektiv bewertet / offen',
+  'Objective / open ended': 'Bewertet / offen',
   'Strict score': 'Strenge Punktzahl',
   'Partial score': 'Teilpunktzahl',
   'Open-ended self-assessment': 'Selbstbewertung offener Fragen',
   'Your written answer is not automatically graded and does not enter the objective percentages.':
-    'Ihre schriftliche Antwort wird nicht automatisch bewertet und fließt nicht in die objektiven Prozentwerte ein.',
+    'Diese Antwort bewerten Sie selbst. Sie zählt nicht zum Punktestand.',
   'Self-assessed: {0} · Next due {1}': 'Selbstbewertung: {0} · Nächste Wiederholung {1}',
   Know: 'Gewusst',
   Repeat: 'Wiederholen',
@@ -435,14 +447,14 @@ export default {
   '⚑ Flagged during exam': '⚑ Während der Prüfung markiert',
   '⚑ In review queue': '⚑ In der Wiederholungsliste',
   'Add to review queue': 'Zur Wiederholungsliste hinzufügen',
-  'Objective score breakdown': 'Aufschlüsselung der objektiven Bewertung',
+  'Objective score breakdown': 'Punkteübersicht',
   'By {0}': 'Nach {0}',
   'Strict points': 'Strenge Punkte',
   'Strict %': 'Streng %',
   'Partial points': 'Teilpunkte',
   'Partial %': 'Teilpunkte %',
   'EXAM COMPLETE': 'PRÜFUNG ABGESCHLOSSEN',
-  'A clearer picture of your progress.': 'Ein klareres Bild Ihres Fortschritts.',
+  'A clearer picture of your progress.': 'Prüfungsergebnisse',
   'Completed {0}{1}': 'Abgeschlossen am {0}{1}',
   ' · Automatically submitted at the deadline': ' · Bei Ablauf automatisch abgegeben',
   'All results': 'Alle Ergebnisse',
@@ -465,38 +477,37 @@ export default {
   'Due first': 'Fällige zuerst',
   Random: 'Zufällig',
   'No matching questions. Enable banks or change your filters.':
-    'Keine passenden Fragen. Aktivieren Sie Fragenbanken oder ändern Sie Ihre Filter.',
+    'Keine passenden Fragen. Aktivieren Sie eine Fragenbank oder ändern Sie die Filter.',
   'RETURN & REFLECT': 'ZURÜCKKEHREN & NACHDENKEN',
   'DAILY PRACTICE': 'TÄGLICH ÜBEN',
-  'Your review queue': 'Ihre Wiederholungsliste',
-  'Make knowledge stick.': 'Wissen festigen.',
+  'Your review queue': 'Wiederholungsliste',
+  'Make knowledge stick.': 'Lernen',
   'Choose a manageable set. Answers and explanations appear as you go.':
-    'Wählen Sie eine überschaubare Menge. Antworten und Erklärungen erscheinen während des Lernens.',
-  'Build your session': 'Ihre Sitzung zusammenstellen',
+    'Wählen Sie Ihre Fragen aus. Nach jeder Antwort erhalten Sie Rückmeldung.',
+  'Build your session': 'Fragen auswählen',
   'Restricted to the selected exam’s questions. Disabled or deleted banks are excluded.':
     'Auf die Fragen der ausgewählten Prüfung beschränkt. Deaktivierte oder gelöschte Fragenbanken sind ausgeschlossen.',
   'Order ': 'Reihenfolge ',
-  'Start session →': 'Sitzung starten →',
+  'Start session →': 'Lernen starten',
   'Quick review': 'Schnelle Wiederholung',
   'Due means previously reviewed and scheduled for now. New questions have no recorded response. Incorrect uses the most recent objective response.':
-    'Fällig bedeutet bereits wiederholt und jetzt eingeplant. Neue Fragen haben noch keine gespeicherte Antwort. Falsch bezieht sich auf die letzte objektiv bewertete Antwort.',
+    'Fällige Fragen stehen zur Wiederholung an. Neue Fragen haben Sie noch nicht beantwortet. Falsch zeigt Fragen, deren letzte bewertete Antwort falsch war.',
   'Question skipped': 'Frage übersprungen',
   'Response saved. Next due {0}': 'Antwort gespeichert. Nächste Wiederholung {0}',
   'Reveal answer': 'Antwort anzeigen',
-  'Self-assess your recall:': 'Bewerten Sie Ihre Erinnerung selbst:',
+  'Self-assess your recall:': 'Wie gut konnten Sie sich erinnern?',
   'Check answer': 'Antwort prüfen',
   'Choose an answer, or intentionally skip this question.':
-    'Wählen Sie eine Antwort oder überspringen Sie diese Frage bewusst.',
+    'Wählen Sie eine Antwort oder überspringen Sie die Frage.',
   Skip: 'Überspringen',
   'Saved · Next due {0}': 'Gespeichert · Nächste Wiederholung {0}',
-  'Skipped · Saved to your skipped queue':
-    'Übersprungen · In Ihrer Liste übersprungener Fragen gespeichert',
+  'Skipped · Saved to your skipped queue': 'Übersprungen · Unter Schnelle Wiederholung zu finden',
   'FOCUSED STUDY': 'KONZENTRIERT LERNEN',
   '{0} reviewed · {1} remaining due': '{0} wiederholt · {1} noch fällig',
   'End session': 'Sitzung beenden',
   'Reviewed questions': 'Wiederholte Fragen',
   'Alt + R reveal/check · Alt + F flag': 'Alt + R anzeigen/prüfen · Alt + F markieren',
-  'Finish session ✓': 'Sitzung abschließen ✓',
+  'Finish session ✓': 'Lerneinheit beenden',
   '{0} responses saved.': '{0} Antworten gespeichert.',
   'Transaction exceeds 2 MiB. Import a smaller backup.':
     'Transaktion überschreitet 2 MiB. Importieren Sie eine kleinere Sicherung.',
@@ -519,9 +530,9 @@ export default {
   'Sign in with Google': 'Mit Google anmelden',
   'Continue as guest': 'Als Gast fortfahren',
   'Accounts save online. Guest data stays separate; transfer it with a backup.':
-    'Konten speichern online. Gastdaten bleiben getrennt; übertragen Sie sie mit einer Sicherung.',
+    'Gast- und Kontodaten bleiben getrennt. Übertragen Sie sie mit einer Sicherung.',
   'Google sign-in is available on the configured Cloudflare deployment.':
-    'Die Google-Anmeldung ist in der konfigurierten Cloudflare-Bereitstellung verfügbar.',
+    'Die Anmeldung ist hier nicht verfügbar. Sie können als Gast lernen.',
   'Invalid SVG': 'Ungültiges SVG',
   'Invalid image path or image exceeds 256 KiB: {0}':
     'Ungültiger Bildpfad oder Bild überschreitet 256 KiB: {0}',
@@ -609,16 +620,15 @@ export default {
   'quitsar · Local study': 'quitsar · Lokal lernen',
   'Skip to content': 'Zum Inhalt springen',
   Application: 'Anwendung',
-  'STUDY ANY SUBJECT': 'JEDES FACH LERNEN',
+  'STUDY ANY SUBJECT': 'Platz zum Lernen',
   'Account & help': 'Konto & Hilfe',
   'Main navigation': 'Hauptnavigation',
-  'Private by design': 'Datenschutz von Anfang an',
+  'Private by design': 'Ihre Lerndaten',
   'Study as a guest or save to your private account.':
-    'Lernen Sie als Gast oder speichern Sie in Ihrem privaten Konto.',
+    'Lernen Sie als Gast oder melden Sie sich an, um online zu speichern.',
   Account: 'Konto',
-  '? Help & shortcuts': '? Hilfe & Tastenkürzel',
-  '◉ Local storage · Preparing offline cache':
-    '◉ Lokaler Speicher · Offline-Cache wird vorbereitet',
+  '? Help & shortcuts': 'Hilfe & Tastenkürzel',
+  '◉ Local storage · Preparing offline cache': 'Offlinezugriff wird vorbereitet…',
   'Opening your local study space…': 'Ihr lokaler Lernbereich wird geöffnet…',
   'One question at a time.': 'Eine Frage nach der anderen.',
   Close: 'Schließen',
@@ -635,7 +645,7 @@ export default {
   System: 'System',
   Light: 'Hell',
   Dark: 'Dunkel',
-  Both: 'Beide',
+  Both: 'Beide Bewertungen',
   'No subtopic': 'Kein Unterthema',
   Subtopic: 'Unterthema',
   'Expected application/json.': 'application/json erwartet.',
@@ -685,5 +695,109 @@ export default {
   'Permanently remove this invalid record? Download a copy first.':
     'Diesen ungültigen Datensatz dauerhaft entfernen? Laden Sie zuerst eine Kopie herunter.',
   'Too many writes. Please wait a minute and retry.':
-    'Zu viele Schreibvorgänge. Bitte warten Sie eine Minute und versuchen Sie es erneut.'
+    'Zu viele Schreibvorgänge. Bitte warten Sie eine Minute und versuchen Sie es erneut.',
+  'Spaced repetition': 'Verteiltes Wiederholen',
+  'Questions due for a scheduled review.': 'Fragen, deren geplante Wiederholung fällig ist.',
+  'Incorrect answers': 'Falsche Antworten',
+  'Questions whose latest graded answer was wrong.':
+    'Fragen, deren letzte bewertete Antwort falsch war.',
+  'Saved by you. Keep them here until you unflag them.':
+    'Von Ihnen gespeichert. Sie bleiben hier, bis Sie die Markierung entfernen.',
+  'Skipped questions': 'Übersprungene Fragen',
+  'Questions you left unanswered. Answer them to clear this list.':
+    'Unbeantwortete Fragen. Durch Beantworten entfernen Sie sie aus dieser Liste.',
+  'Explore topics, learn new material, or build your own practice session.':
+    'Erkunden Sie Themen, lernen Sie Neues oder stellen Sie eine eigene Übung zusammen.',
+  'Practice a topic': 'Ein Thema üben',
+  '{0} questions · {1} new': '{0} Fragen · {1} neu',
+  Practice: 'Üben',
+  'Enable or import a question bank to start learning.':
+    'Aktivieren oder importieren Sie eine Fragensammlung, um zu beginnen.',
+  'Learn new questions': 'Neue Fragen lernen',
+  'Custom practice': 'Eigene Übung',
+  Order: 'Reihenfolge',
+  'Session size': 'Fragen pro Sitzung',
+  'Question selection': 'Fragenauswahl',
+  'Review due questions': 'Fällige Fragen wiederholen',
+  'Start review': 'Wiederholung starten',
+  'No reviews due now': 'Zurzeit sind keine Wiederholungen fällig',
+  'No questions in this selection': 'Keine Fragen in dieser Auswahl',
+  'Next review: {0}': 'Nächste Wiederholung: {0}',
+  'Choose another group or adjust your filters.':
+    'Wählen Sie eine andere Gruppe oder passen Sie die Filter an.',
+  'Return to scheduled reviews, mistakes, and questions saved for later.':
+    'Kehren Sie zu fälligen Wiederholungen, Fehlern und gespeicherten Fragen zurück.',
+  'Review groups': 'Wiederholungsgruppen',
+  'Repeat brings a forgotten question back in 10 minutes. Know schedules its next review with spaced repetition.':
+    'Wiederholen bringt eine vergessene Frage in 10 Minuten zurück. Gewusst plant die nächste verteilte Wiederholung.',
+  'Filter by bank, topic, or difficulty': 'Nach Sammlung, Thema oder Schwierigkeit filtern',
+  'Questions can belong to more than one group. Every answer updates the same learning progress.':
+    'Fragen können zu mehreren Gruppen gehören. Jede Antwort aktualisiert denselben Lernfortschritt.',
+  'Incorrect: {0} · Correct: {1}': 'Falsch: {0} · Richtig: {1}',
+  'Scheduled review': 'Geplante Wiederholung',
+  'Session complete': 'Sitzung abgeschlossen',
+  '{0} answered · {1} skipped': '{0} beantwortet · {1} übersprungen',
+  'Progress saved': 'Fortschritt gespeichert',
+  '{0} questions due now': '{0} Fragen jetzt fällig',
+  'Back to review': 'Zurück zur Wiederholung',
+  'Back to study': 'Zurück zum Lernen',
+  'Save for later': 'Für später speichern',
+  'Invalid spaced repetition state': 'Ungültiger Wiederholungsstatus',
+  'Desired retention must be between 70 and 97 percent.':
+    'Die gewünschte Behaltensrate muss zwischen 70 und 97 Prozent liegen.',
+  'Reviews adapt to your answers and the time since your last review. Repeat means you forgot; Know means you recalled the answer. Skipping leaves the schedule unchanged.':
+    'Wiederholungen passen sich Ihren Antworten und der vergangenen Zeit an. Wiederholen bedeutet vergessen, Gewusst bedeutet erinnert. Überspringen ändert den Zeitplan nicht.',
+  'Desired retention (%)': 'Gewünschte Behaltensrate (%)',
+  'Default: 90%. Higher values mean more frequent reviews.':
+    'Standard: 90 %. Höhere Werte bedeuten häufigere Wiederholungen.',
+  'Maximum interval (days)': 'Maximales Intervall (Tage)',
+  'Default: 180 days. Forgotten questions return in 10 minutes.':
+    'Standard: 180 Tage. Vergessene Fragen kommen in 10 Minuten zurück.',
+  'Scheduling uses FSRS with default memory parameters. Existing due dates stay unchanged until you answer again.':
+    'Die Planung verwendet FSRS mit Standardparametern. Bestehende Termine bleiben bis zur nächsten Antwort erhalten.',
+  'New first': 'Neue zuerst',
+  'Difficulty: easy to hard': 'Schwierigkeit: leicht bis schwer',
+  'Difficulty: hard to easy': 'Schwierigkeit: schwer bis leicht',
+  'Import questions': 'Fragen importieren',
+  'Format & AI guide': 'Format und KI-Anleitung',
+  'Question bank format': 'Format der Fragensammlung',
+  'Loading format guide…': 'Formatanleitung wird geladen…',
+  'Copy the AI prompt and paste it into your AI of choice with your notes. Ask it to generate questions, save its JSON response as a .json file, then return here to validate and import it.':
+    'Kopieren Sie die KI-Vorlage zusammen mit Ihren Notizen in ein KI-Werkzeug Ihrer Wahl. Lassen Sie Fragen erstellen, speichern Sie die JSON-Antwort als .json-Datei und kehren Sie zum Prüfen und Importieren zurück.',
+  'The schema, field descriptions, and AI prompt are in English. Ask your AI to write the questions in any language.':
+    'Schema, Feldbeschreibungen und KI-Vorlage sind auf Englisch. Die Fragen kann Ihre KI in jeder Sprache erstellen.',
+  'AI prompt': 'KI-Vorlage',
+  'Copy AI prompt': 'KI-Vorlage kopieren',
+  'Copied. Paste it into your AI tool or text editor.':
+    'Kopiert. Fügen Sie den Text in Ihr KI-Werkzeug oder Ihren Texteditor ein.',
+  'Automatic copying is unavailable. The text is selected; copy it with Ctrl/Cmd+C.':
+    'Automatisches Kopieren ist nicht verfügbar. Der Text ist markiert; kopieren Sie ihn mit Strg/Cmd+C.',
+  'Example JSON — all four question types': 'JSON-Beispiel – alle vier Fragetypen',
+  'The image example references diagram.svg. Attach your own matching image when importing, or use a question type without images.':
+    'Das Bildbeispiel verweist auf diagram.svg. Fügen Sie beim Import ein passendes eigenes Bild bei oder verwenden Sie einen Fragetyp ohne Bilder.',
+  'Example JSON': 'JSON-Beispiel',
+  'Copy example JSON': 'JSON-Beispiel kopieren',
+  'Download example JSON': 'JSON-Beispiel herunterladen',
+  'Field reference': 'Feldreferenz',
+  'Document fields': 'Dokumentfelder',
+  'Bank fields': 'Sammlungsfelder',
+  'Topic fields': 'Themenfelder',
+  'Subtopic fields': 'Unterthemenfelder',
+  'Question fields': 'Fragefelder',
+  'Open-ended answer fields': 'Felder offener Antworten',
+  'Answer option fields': 'Felder der Antwortoptionen',
+  'Image fields': 'Bildfelder',
+  'Source fields': 'Quellenfelder',
+  Required: 'Erforderlich',
+  Optional: 'Optional',
+  'Depends on question type': 'Abhängig vom Fragetyp',
+  'Maximum characters': 'Maximale Zeichenzahl',
+  'Other source keys are allowed; every value must be a string of at most 3,000 characters.':
+    'Weitere Quellenschlüssel sind erlaubt; jeder Wert muss eine Zeichenfolge mit höchstens 3.000 Zeichen sein.',
+  'Full JSON Schema': 'Vollständiges JSON-Schema',
+  'JSON Schema': 'JSON-Schema',
+  'Copy schema': 'Schema kopieren',
+  'Back to import': 'Zurück zum Import',
+  'The format guide could not be loaded. Check your connection and try again.':
+    'Die Formatanleitung konnte nicht geladen werden. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.'
 };

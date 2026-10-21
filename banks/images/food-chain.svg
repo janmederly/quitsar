@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 180" width="720" height="180">
+  <title>Grass to grasshopper to frog to snake</title>
+  <rect width="720" height="180" rx="12" fill="#f4f5f8"/>
+  <g fill="#292d38" font-family="sans-serif" font-size="20" text-anchor="middle">
+    <text x="75" y="87">Grass</text>
+    <text x="266" y="87">Grasshopper</text>
+    <text x="462" y="87">Frog</text>
+    <text x="645" y="87">Snake</text>
+  </g>
+  <g fill="none" stroke="#52648d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M120 80h55m-10-8 10 8-10 8"/>
+    <path d="M355 80h55m-10-8 10 8-10 8"/>
+    <path d="M510 80h75m-10-8 10 8-10 8"/>
+  </g>
+  <text x="360" y="144" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#656b78">Arrows show the direction of energy transfer</text>
+</svg>

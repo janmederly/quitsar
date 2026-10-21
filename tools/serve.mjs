@@ -45,6 +45,9 @@ const mime = {
   '.css': 'text/css; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
   '.svg': 'image/svg+xml',
+  '.webp': 'image/webp',
+  '.png': 'image/png',
+  '.woff2': 'font/woff2',
   '.md': 'text/plain; charset=utf-8'
 };
 const server = http

@@ -1,3 +1,4 @@
+import english from './locales/en.js';
 import slovak from './locales/sk.js';
 import czech from './locales/cs.js';
 import german from './locales/de.js';
@@ -5,7 +6,7 @@ import spanish from './locales/es.js';
 import french from './locales/fr.js';
 
 export const languages = ['en', 'sk', 'cs', 'de', 'es', 'fr'];
-const dictionaries = { sk: slovak, cs: czech, de: german, es: spanish, fr: french };
+const dictionaries = { en: english, sk: slovak, cs: czech, de: german, es: spanish, fr: french };
 const locales = { en: 'en-GB', sk: 'sk-SK', cs: 'cs-CZ', de: 'de-DE', es: 'es-ES', fr: 'fr-FR' };
 const storageKey = 'quitsar-language';
 let language = 'en';

@@ -1,0 +1,447 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "quitsar question bank 1.0",
+  "type": "object",
+  "description": "Question-bank import format. The app additionally checks unique IDs, topic/subtopic references, real dates, and file sizes. Unknown author metadata is allowed and ignored by the app. Omit unused optional fields rather than setting them to null. App text limits count UTF-16 code units.",
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "1.0",
+      "description": "Exact format version: the string \"1.0\"."
+    },
+    "bank": {
+      "type": "object",
+      "description": "Metadata describing the question bank.",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id",
+          "description": "Distinctive bank ID, such as biology-cells-2026. Importing an existing ID asks to update that bank; progress is retained by bank ID and question ID."
+        },
+        "title": {
+          "type": "string",
+          "description": "Bank title shown in the library.",
+          "maxLength": 300,
+          "pattern": "\\S"
+        },
+        "version": {
+          "type": "string",
+          "description": "Content version chosen by the author, such as 1.0.0. Separate from schemaVersion; increment it when updating the bank.",
+          "maxLength": 100,
+          "pattern": "\\S"
+        },
+        "language": {
+          "type": "string",
+          "description": "Language of the questions, such as en, sk or en-GB. BCP 47 language tags are recommended.",
+          "maxLength": 40,
+          "pattern": "\\S"
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional description of the subject and scope.",
+          "maxLength": 30000
+        },
+        "author": {
+          "type": "string",
+          "description": "Optional author or organization.",
+          "maxLength": 30000
+        },
+        "license": {
+          "type": "string",
+          "description": "Optional license or permission to use the content.",
+          "maxLength": 30000
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "Optional real creation date in YYYY-MM-DD format."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "Optional real date of the content update, in YYYY-MM-DD format."
+        },
+        "topics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/topic",
+            "description": "A declared topic."
+          },
+          "description": "Declare every topic referenced by questions. Subtopic IDs are scoped to their parent topic."
+        }
+      },
+      "required": ["id", "title", "version", "language", "topics"],
+      "additionalProperties": true
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/question",
+        "description": "A question in this bank."
+      },
+      "description": "Between 1 and 20,000 questions. The entire UTF-8 JSON file must also fit within 512 KiB.",
+      "minItems": 1,
+      "maxItems": 20000
+    }
+  },
+  "required": ["schemaVersion", "bank", "questions"],
+  "additionalProperties": true,
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$",
+      "minLength": 1,
+      "maxLength": 100,
+      "description": "1–100 ASCII letters, digits, dots, underscores or hyphens; start with a letter or digit. IDs are case-sensitive."
+    },
+    "topic": {
+      "type": "object",
+      "description": "A declared topic used for browsing and filtering.",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id",
+          "description": "Topic ID, unique within this bank. Questions reference it through topicId."
+        },
+        "title": {
+          "type": "string",
+          "description": "Human-readable topic title.",
+          "maxLength": 300,
+          "pattern": "\\S"
+        },
+        "subtopics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subtopic",
+            "description": "A subtopic belonging to this topic."
+          },
+          "description": "Optional subtopics. A question’s subtopicId must belong to its topicId."
+        }
+      },
+      "required": ["id", "title"],
+      "additionalProperties": true
+    },
+    "subtopic": {
+      "type": "object",
+      "description": "Optional subdivision of a topic.",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id",
+          "description": "Subtopic ID, unique within its parent topic."
+        },
+        "title": {
+          "type": "string",
+          "description": "Human-readable subtopic title.",
+          "maxLength": 300,
+          "pattern": "\\S"
+        }
+      },
+      "required": ["id", "title"],
+      "additionalProperties": true
+    },
+    "question": {
+      "type": "object",
+      "description": "A question. Conditional requirements depend on type. Question IDs must be unique within a bank.",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id",
+          "description": "Stable question ID, unique within this bank. Keep it for content updates; use a new ID for a materially different question."
+        },
+        "type": {
+          "type": "string",
+          "enum": ["open_ended", "single_choice", "multiple_choice", "image_recognition"],
+          "description": "Question type. open_ended requires acceptedAnswer. Other types require options. image_recognition also requires images and selectionMode."
+        },
+        "topicId": {
+          "$ref": "#/$defs/id",
+          "description": "ID of a topic declared in bank.topics."
+        },
+        "subtopicId": {
+          "$ref": "#/$defs/id",
+          "description": "Optional ID of a subtopic declared under this question’s topic."
+        },
+        "prompt": {
+          "type": "string",
+          "description": "The question shown to the learner. Plain text; HTML and Markdown are not evaluated.",
+          "maxLength": 30000,
+          "pattern": "\\S"
+        },
+        "explanation": {
+          "type": "string",
+          "description": "Detailed explanation of the answer. Required for every question type.",
+          "maxLength": 30000,
+          "pattern": "\\S"
+        },
+        "difficulty": {
+          "type": "string",
+          "enum": ["easy", "medium", "hard"],
+          "description": "Author-assigned difficulty, used for filtering and ordering in Study."
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "One nonempty tag.",
+            "maxLength": 100,
+            "pattern": "\\S"
+          },
+          "description": "Optional tags for filtering."
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/image",
+            "description": "One local image reference."
+          },
+          "description": "Optional except for image_recognition, which requires at least one image."
+        },
+        "source": {
+          "$ref": "#/$defs/source",
+          "description": "Optional source details. All values, including page numbers, must be strings."
+        },
+        "acceptedAnswer": {
+          "$ref": "#/$defs/acceptedAnswer",
+          "description": "Required for open_ended. Official answer, alternative answers, and self-assessment guidance."
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/option",
+            "description": "One answer option."
+          },
+          "description": "Required for single_choice, multiple_choice, and image_recognition. Supply 2–100 options; exactly one correct for single selection, at least one for multiple selection.",
+          "minItems": 2,
+          "maxItems": 100
+        },
+        "selectionMode": {
+          "type": "string",
+          "enum": ["single", "multiple"],
+          "description": "Required for image_recognition. single allows one selected answer; multiple allows several. Other question types do not use this field."
+        }
+      },
+      "required": ["id", "type", "topicId", "prompt", "explanation", "difficulty"],
+      "additionalProperties": true,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "open_ended"
+              }
+            },
+            "required": ["type"]
+          },
+          "then": {
+            "required": ["acceptedAnswer"]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": ["single_choice", "multiple_choice", "image_recognition"]
+              }
+            },
+            "required": ["type"]
+          },
+          "then": {
+            "required": ["options"],
+            "properties": {
+              "options": {
+                "contains": {
+                  "type": "object",
+                  "properties": {
+                    "isCorrect": {
+                      "const": true
+                    }
+                  },
+                  "required": ["isCorrect"]
+                },
+                "minContains": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "anyOf": [
+              {
+                "properties": {
+                  "type": {
+                    "const": "single_choice"
+                  }
+                },
+                "required": ["type"]
+              },
+              {
+                "properties": {
+                  "type": {
+                    "const": "image_recognition"
+                  },
+                  "selectionMode": {
+                    "const": "single"
+                  }
+                },
+                "required": ["type", "selectionMode"]
+              }
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "contains": {
+                  "type": "object",
+                  "properties": {
+                    "isCorrect": {
+                      "const": true
+                    }
+                  },
+                  "required": ["isCorrect"]
+                },
+                "minContains": 1,
+                "maxContains": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "image_recognition"
+              }
+            },
+            "required": ["type"]
+          },
+          "then": {
+            "required": ["images", "selectionMode"],
+            "properties": {
+              "images": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "acceptedAnswer": {
+      "type": "object",
+      "description": "Required for open_ended questions. Written answers are self-assessed with Repeat/Know, not automatically graded.",
+      "properties": {
+        "display": {
+          "type": "string",
+          "description": "Official answer revealed to the learner. Required for an open-ended question.",
+          "maxLength": 30000,
+          "pattern": "\\S"
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "An alternative acceptable answer.",
+            "maxLength": 1000,
+            "pattern": "\\S"
+          },
+          "description": "Optional alternative answers. These are displayed, not used for automatic grading."
+        },
+        "feedback": {
+          "type": "string",
+          "description": "Optional guidance for self-assessing the answer.",
+          "maxLength": 30000
+        }
+      },
+      "required": ["display"],
+      "additionalProperties": true
+    },
+    "option": {
+      "type": "object",
+      "description": "One answer option. All four fields are required.",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id",
+          "description": "Stable option ID, unique within this question. Saved selections use this ID, not its position."
+        },
+        "text": {
+          "type": "string",
+          "description": "Answer text shown to the learner.",
+          "maxLength": 30000,
+          "pattern": "\\S"
+        },
+        "isCorrect": {
+          "type": "boolean",
+          "description": "Whether this option is correct. Use a JSON boolean true or false, never a string or answer letter."
+        },
+        "rationale": {
+          "type": "string",
+          "description": "Explain why this individual option is correct or incorrect.",
+          "maxLength": 30000,
+          "pattern": "\\S"
+        }
+      },
+      "required": ["id", "text", "isCorrect", "rationale"],
+      "additionalProperties": true
+    },
+    "image": {
+      "type": "object",
+      "description": "A local image reference. Both fields are required. Images must be attached separately: 256 KiB each, 512 KiB combined per bank.",
+      "properties": {
+        "path": {
+          "type": "string",
+          "maxLength": 300,
+          "description": "Relative local image path, such as images/cell.webp. Use forward slashes and unique filenames. No URLs, leading slash, empty segments, dot/dot-dot segments, backslashes, queries or percent encoding. Select image files explicitly when importing.",
+          "allOf": [
+            {
+              "pattern": "^[A-Za-z0-9_./ -]+$"
+            },
+            {
+              "pattern": "\\.(?:[sS][vV][gG]|[pP][nN][gG]|[jJ][pP][eE]?[gG]|[gG][iI][fF]|[wW][eE][bB][pP])$"
+            },
+            {
+              "not": {
+                "pattern": "^/|//|(^|/)\\.{1,2}(/|$)"
+              }
+            }
+          ]
+        },
+        "alt": {
+          "type": "string",
+          "description": "Useful description of what the image shows, for accessibility and when an image is missing.",
+          "maxLength": 2000,
+          "pattern": "\\S"
+        }
+      },
+      "required": ["path", "alt"],
+      "additionalProperties": true
+    },
+    "source": {
+      "type": "object",
+      "description": "Optional source information, displayed as text. Every value, including page or slide numbers, must be a string of at most 3,000 characters. Other string-valued keys are allowed. References are not fetched.",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Source title; also available as a study filter.",
+          "maxLength": 3000
+        },
+        "reference": {
+          "type": "string",
+          "description": "Citation or identifying reference, displayed literally.",
+          "maxLength": 3000
+        },
+        "pageOrSlide": {
+          "type": "string",
+          "description": "Page or slide reference as text, such as \"12–14\".",
+          "maxLength": 3000
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional context about the source.",
+          "maxLength": 3000
+        }
+      },
+      "additionalProperties": {
+        "type": "string",
+        "maxLength": 3000
+      }
+    }
+  }
+}

@@ -4,7 +4,7 @@ pages_build_output_dir = "./dist"
 
 # Runtime configuration. Change this if Pages uses a different production domain.
 [vars]
-APP_ORIGIN = "https://quitsar.pages.dev"
+APP_ORIGIN = "https://quitsar.com"
 
 # Keep GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in Cloudflare's secrets UI.
 # The build also reads APP_ORIGIN above for site URLs; no build variable is required.

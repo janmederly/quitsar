@@ -75,7 +75,7 @@ INSERT INTO sessions VALUES ('${digest}','smoke',${Date.now() + 300000});`
   assert.equal(homepage.status, 200);
   const html = await homepage.text();
   assert.match(html, /name="description"/);
-  assert.match(html, /<h1>A little progress, every day\.<\/h1>/);
+  assert.match(html, /<h1>Your study space<\/h1>/);
   const schema = JSON.parse(
     html.match(/<script type="application\/ld\+json">([^<]+)<\/script>/)[1]
   );
@@ -130,10 +130,11 @@ INSERT INTO sessions VALUES ('${digest}','smoke',${Date.now() + 300000});`
     { name: 'qr_session', value: token, url: origin, httpOnly: true, sameSite: 'Lax' }
   ]);
   const page = await context.newPage();
+  page.on('dialog', (dialog) => dialog.accept());
   await page.goto(origin);
   await page.getByText('smoke@example.com', { exact: true }).waitFor();
   await page.getByRole('link', { name: 'Question banks', exact: true }).click();
-  await page.getByRole('button', { name: 'Load included demo bank' }).click();
+  await page.getByRole('button', { name: 'Try the demo bank' }).click();
   await page.getByText('Demo saved to your account with all images.', { exact: true }).waitFor();
   await page.getByRole('link', { name: 'Settings', exact: true }).click();
   await page.getByLabel('Theme', { exact: true }).selectOption('dark');

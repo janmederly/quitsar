@@ -1,47 +1,67 @@
 {
   "schemaVersion": "1.0",
   "bank": {
-    "id": "quitsar-student-demo",
-    "title": "Across Subjects · Demo",
-    "description": "Explore mathematics, science, and humanities with 12 sample questions. Then bring your own question banks for any subject.",
+    "id": "quitsar-biology-demo",
+    "title": "Biology · High-school practice",
+    "description": "Twelve questions on cells, genetics, and ecosystems. Practise the basics, explain ideas in your own words, or try a short exam.",
     "language": "en",
-    "version": "1.0.0",
-    "createdAt": "2026-10-19",
+    "version": "1.1.0",
+    "createdAt": "2026-10-21",
     "updatedAt": "2026-10-21",
     "author": "quitsar",
     "license": "CC0-1.0",
     "topics": [
       {
-        "id": "mathematics",
-        "title": "Mathematics",
+        "id": "cells",
+        "title": "Cells and life processes",
         "subtopics": [
           {
-            "id": "geometry",
-            "title": "Geometry"
+            "id": "cell-structure",
+            "title": "Cell structure"
           },
           {
-            "id": "rates",
-            "title": "Rates and units"
+            "id": "respiration",
+            "title": "Respiration"
+          },
+          {
+            "id": "enzymes",
+            "title": "Enzymes"
+          },
+          {
+            "id": "photosynthesis",
+            "title": "Photosynthesis"
           }
         ]
       },
       {
-        "id": "science",
-        "title": "Science",
+        "id": "genetics",
+        "title": "Genetics",
         "subtopics": [
           {
-            "id": "cell",
-            "title": "Cell biology"
+            "id": "cell-division",
+            "title": "Cell division"
+          },
+          {
+            "id": "inheritance",
+            "title": "Inheritance"
           }
         ]
       },
       {
-        "id": "humanities",
-        "title": "Humanities",
+        "id": "ecology",
+        "title": "Ecosystems",
         "subtopics": [
           {
-            "id": "history",
-            "title": "History and sources"
+            "id": "food-chains",
+            "title": "Food chains"
+          },
+          {
+            "id": "populations",
+            "title": "Populations"
+          },
+          {
+            "id": "carbon-cycle",
+            "title": "Carbon cycle"
           }
         ]
       }
@@ -49,417 +69,398 @@
   },
   "questions": [
     {
-      "id": "math-open-001",
-      "type": "open_ended",
-      "topicId": "mathematics",
-      "subtopicId": "geometry",
-      "prompt": "Describe the shaded shape in this geometry diagram.",
-      "images": [
-        {
-          "path": "images/annulus.svg",
-          "alt": "A blue shaded ring between two concentric circles with an unshaded center"
-        }
-      ],
-      "acceptedAnswer": {
-        "display": "An annulus: the region between two concentric circles.",
-        "aliases": ["A ring", "A ring-shaped region"],
-        "feedback": "Mention the inner and outer circular boundaries."
-      },
-      "explanation": "An annulus is bounded by two circles with the same center and different radii.",
-      "difficulty": "easy",
-      "tags": ["geometry", "description"],
-      "source": {
-        "title": "Original cross-subject demo exercises",
-        "pageOrSlide": "1"
-      }
-    },
-    {
-      "id": "math-single-001",
-      "type": "single_choice",
-      "topicId": "mathematics",
-      "subtopicId": "geometry",
-      "prompt": "Which term means ring-shaped?",
-      "images": [],
-      "options": [
-        {
-          "id": "annular",
-          "text": "Annular",
-          "isCorrect": true,
-          "rationale": "Annular describes a ring-shaped arrangement."
-        },
-        {
-          "id": "linear",
-          "text": "Linear",
-          "isCorrect": false,
-          "rationale": "Linear describes an arrangement along a line."
-        },
-        {
-          "id": "reticular",
-          "text": "Reticular",
-          "isCorrect": false,
-          "rationale": "Reticular describes a net-like pattern."
-        }
-      ],
-      "explanation": "Annular means ring-shaped; an annulus is the region between two concentric circles.",
-      "difficulty": "easy",
-      "tags": ["geometry", "terminology"],
-      "source": {
-        "title": "Original cross-subject demo exercises",
-        "pageOrSlide": "2"
-      }
-    },
-    {
-      "id": "math-multi-001",
-      "type": "multiple_choice",
-      "topicId": "mathematics",
-      "subtopicId": "geometry",
-      "prompt": "Which statements describe visible features of the shaded ring in the demo geometry diagram?",
-      "options": [
-        {
-          "id": "shape",
-          "text": "A ring-shaped region",
-          "isCorrect": true,
-          "rationale": "The shaded region surrounds an unshaded circular center."
-        },
-        {
-          "id": "border",
-          "text": "Two circular boundaries",
-          "isCorrect": true,
-          "rationale": "The inner and outer edges are circles."
-        },
-        {
-          "id": "material",
-          "text": "Made of metal",
-          "isCorrect": false,
-          "rationale": "A diagram of a shape does not specify its material."
-        },
-        {
-          "id": "purpose",
-          "text": "Designed as a wheel",
-          "isCorrect": false,
-          "rationale": "The shape alone does not establish a purpose."
-        }
-      ],
-      "explanation": "The diagram shows a ring with circular boundaries. It provides no information about physical material or purpose.",
-      "difficulty": "medium",
-      "tags": ["geometry", "observation"],
-      "source": {
-        "title": "Original cross-subject demo exercises",
-        "pageOrSlide": "3"
-      }
-    },
-    {
-      "id": "math-image-001",
+      "id": "cells-image-nucleus-001",
       "type": "image_recognition",
+      "topicId": "cells",
+      "subtopicId": "cell-structure",
+      "prompt": "Which structure is labelled A?",
       "selectionMode": "single",
-      "topicId": "mathematics",
-      "subtopicId": "geometry",
-      "prompt": "Which geometric pattern does the shaded region form?",
       "images": [
         {
-          "path": "images/annulus.svg",
-          "alt": "A blue shaded ring between two concentric circles with an unshaded center"
+          "path": "images/animal-cell.webp",
+          "alt": "A cutaway illustration of an animal cell. A points to a large purple structure containing a darker round body, B to the outer boundary, and C to the pale blue material between the structures. Smaller orange structures have folded inner membranes."
         }
       ],
       "options": [
-        {
-          "id": "ring",
-          "text": "Annular pattern",
-          "isCorrect": true,
-          "rationale": "The visible rim forms a ring."
-        },
-        {
-          "id": "line",
-          "text": "Linear pattern",
-          "isCorrect": false,
-          "rationale": "There is no line-shaped distribution."
-        },
-        {
-          "id": "net",
-          "text": "Reticular pattern",
-          "isCorrect": false,
-          "rationale": "The diagram does not form a network."
-        }
-      ],
-      "explanation": "The shaded region forms a ring between two concentric circles.",
-      "difficulty": "easy",
-      "tags": ["geometry", "image recognition"],
-      "source": {
-        "title": "Original cross-subject demo exercises",
-        "pageOrSlide": "4"
-      }
-    },
-    {
-      "id": "math-open-002",
-      "type": "open_ended",
-      "topicId": "mathematics",
-      "subtopicId": "rates",
-      "prompt": "Write the relationship between distance, constant speed, and time.",
-      "acceptedAnswer": {
-        "display": "Distance = speed × time.",
-        "aliases": ["d = v × t", "d = v * t"]
-      },
-      "explanation": "At constant speed, each unit of time adds the same distance. Multiplying speed by elapsed time gives distance.",
-      "difficulty": "easy",
-      "tags": ["equation", "rates"],
-      "source": {
-        "title": "Original cross-subject demo exercises",
-        "pageOrSlide": "5"
-      }
-    },
-    {
-      "id": "math-single-002",
-      "type": "single_choice",
-      "topicId": "mathematics",
-      "subtopicId": "rates",
-      "prompt": "A cyclist travels at a constant 14 km/h for 0.3 hours. How far do they travel?",
-      "options": [
-        {
-          "id": "4-2",
-          "text": "4.2 km",
-          "isCorrect": true,
-          "rationale": "14 × 0.3 = 4.2 km."
-        },
-        {
-          "id": "0-42",
-          "text": "0.42 km",
-          "isCorrect": false,
-          "rationale": "This is ten times smaller than the product."
-        },
-        {
-          "id": "42",
-          "text": "42 km",
-          "isCorrect": false,
-          "rationale": "This is ten times larger than the product."
-        }
-      ],
-      "explanation": "Distance = 14 × 0.3 = 4.2 km.",
-      "difficulty": "medium",
-      "tags": ["calculation", "rates"],
-      "source": {
-        "title": "Original cross-subject demo exercises",
-        "pageOrSlide": "6"
-      }
-    },
-    {
-      "id": "science-multi-001",
-      "type": "multiple_choice",
-      "topicId": "science",
-      "subtopicId": "cell",
-      "prompt": "Which statements correctly describe the simplified cell diagram conventions used in this demo?",
-      "options": [
-        {
-          "id": "membrane",
-          "text": "The outer boundary represents the cell membrane.",
-          "isCorrect": true,
-          "rationale": "The outer boundary is used as the membrane symbol."
-        },
-        {
-          "id": "nucleus",
-          "text": "The large central oval represents a nucleus.",
-          "isCorrect": true,
-          "rationale": "The oval is labeled as the nucleus in the demo."
-        },
-        {
-          "id": "scale",
-          "text": "Every component is drawn to accurate biological scale.",
-          "isCorrect": false,
-          "rationale": "It is a schematic and is not to scale."
-        },
-        {
-          "id": "all",
-          "text": "The diagram shows every organelle present in a living cell.",
-          "isCorrect": false,
-          "rationale": "A simplified schematic omits many structures."
-        }
-      ],
-      "explanation": "Schematic conventions support learning but cannot substitute for actual microscopy. For this two-correct-option item: one correct alone earns 0.5 partial; one correct and one incorrect earns 0.",
-      "difficulty": "hard",
-      "tags": ["schematic", "cell biology", "partial scoring"],
-      "source": {
-        "title": "Original cross-subject demo exercises",
-        "pageOrSlide": "7"
-      }
-    },
-    {
-      "id": "science-image-001",
-      "type": "image_recognition",
-      "selectionMode": "multiple",
-      "topicId": "science",
-      "subtopicId": "cell",
-      "prompt": "Select all structures explicitly labeled in this simplified diagram.",
-      "images": [
-        {
-          "path": "images/cell-diagram.svg",
-          "alt": "Simplified oval cell with an outer boundary labeled membrane and a central oval labeled nucleus"
-        }
-      ],
-      "options": [
-        {
-          "id": "membrane",
-          "text": "Membrane",
-          "isCorrect": true,
-          "rationale": "The outer boundary is explicitly labeled."
-        },
         {
           "id": "nucleus",
           "text": "Nucleus",
           "isCorrect": true,
-          "rationale": "The central oval is explicitly labeled."
+          "rationale": "A points to the large purple nucleus. It contains most of the cell’s DNA."
+        },
+        {
+          "id": "mitochondrion",
+          "text": "Mitochondrion",
+          "isCorrect": false,
+          "rationale": "Mitochondria are the smaller orange structures with folded inner membranes."
         },
         {
           "id": "ribosome",
           "text": "Ribosome",
           "isCorrect": false,
-          "rationale": "No ribosome is shown or labeled."
-        },
-        {
-          "id": "golgi",
-          "text": "Golgi apparatus",
-          "isCorrect": false,
-          "rationale": "No Golgi apparatus is shown or labeled."
+          "rationale": "Ribosomes are the small dots in the cytoplasm and on the rough endoplasmic reticulum."
         }
       ],
-      "explanation": "Identify only what is explicitly depicted. This question demonstrates multiple-select image recognition.",
-      "difficulty": "medium",
-      "tags": ["image recognition", "cell biology"],
+      "explanation": "A is the nucleus, B marks the cell membrane, and C marks the cytoplasm. The nucleus contains most of the cell’s DNA and helps control cell activities.",
+      "difficulty": "easy",
+      "tags": ["cells", "cell structure"],
       "source": {
-        "title": "Original cross-subject demo exercises",
-        "pageOrSlide": "8"
+        "title": "Original high-school biology practice"
       }
     },
     {
-      "id": "history-image-001",
+      "id": "cells-open-001",
+      "type": "open_ended",
+      "topicId": "cells",
+      "subtopicId": "cell-structure",
+      "prompt": "What is the role of the nucleus in an animal cell?",
+      "acceptedAnswer": {
+        "display": "The nucleus contains the cell’s DNA and helps control the cell’s activities.",
+        "aliases": ["It stores genetic information and controls cell activities."],
+        "feedback": "Mention DNA and the control of cell activities."
+      },
+      "explanation": "The nucleus holds most of an animal cell’s DNA. Its genes provide instructions for making proteins, which help control what the cell does.",
+      "difficulty": "easy",
+      "tags": ["cells", "cell structure"],
+      "source": {
+        "title": "Original high-school biology practice"
+      }
+    },
+    {
+      "id": "cells-single-001",
+      "type": "single_choice",
+      "topicId": "cells",
+      "subtopicId": "respiration",
+      "prompt": "Which organelle releases most of the energy from glucose during aerobic respiration?",
+      "options": [
+        {
+          "id": "mitochondrion",
+          "text": "Mitochondrion",
+          "isCorrect": true,
+          "rationale": "Most stages of aerobic respiration take place in mitochondria, producing ATP that the cell can use."
+        },
+        {
+          "id": "nucleus",
+          "text": "Nucleus",
+          "isCorrect": false,
+          "rationale": "The nucleus stores DNA. It is not where most ATP is made during aerobic respiration."
+        },
+        {
+          "id": "ribosome",
+          "text": "Ribosome",
+          "isCorrect": false,
+          "rationale": "Ribosomes make proteins rather than carrying out aerobic respiration."
+        }
+      ],
+      "explanation": "Mitochondria use the products of glucose breakdown and oxygen to make most of the ATP produced during aerobic respiration.",
+      "difficulty": "easy",
+      "tags": ["cells", "respiration"],
+      "source": {
+        "title": "Original high-school biology practice"
+      }
+    },
+    {
+      "id": "cells-multi-001",
+      "type": "multiple_choice",
+      "topicId": "cells",
+      "subtopicId": "cell-structure",
+      "prompt": "Which structures are found in photosynthetic plant cells but not in animal cells?",
+      "options": [
+        {
+          "id": "cell-wall",
+          "text": "Cell wall",
+          "isCorrect": true,
+          "rationale": "Plant cells have a cellulose cell wall outside the cell membrane."
+        },
+        {
+          "id": "chloroplast",
+          "text": "Chloroplast",
+          "isCorrect": true,
+          "rationale": "Chloroplasts carry out photosynthesis in photosynthetic plant cells. Animal cells do not have them."
+        },
+        {
+          "id": "nucleus",
+          "text": "Nucleus",
+          "isCorrect": false,
+          "rationale": "Both plant and animal cells usually have a nucleus."
+        },
+        {
+          "id": "membrane",
+          "text": "Cell membrane",
+          "isCorrect": false,
+          "rationale": "Both plant and animal cells have a cell membrane."
+        }
+      ],
+      "explanation": "Plant cells have a cellulose cell wall. Photosynthetic plant cells also have chloroplasts. Both plant and animal cells have a cell membrane and usually a nucleus.",
+      "difficulty": "medium",
+      "tags": ["cells", "cell structure"],
+      "source": {
+        "title": "Original high-school biology practice"
+      }
+    },
+    {
+      "id": "cells-open-002",
+      "type": "open_ended",
+      "topicId": "cells",
+      "subtopicId": "enzymes",
+      "prompt": "Why can a high temperature stop an enzyme from working?",
+      "acceptedAnswer": {
+        "display": "High temperatures can change the shape of an enzyme’s active site, so the substrate no longer fits. This is called denaturation.",
+        "aliases": ["The enzyme denatures and its active site changes shape."]
+      },
+      "explanation": "Enzymes are proteins. Excessive heat can disrupt the bonds that maintain their shape, changing the active site and reducing or stopping their activity.",
+      "difficulty": "medium",
+      "tags": ["cells", "enzymes"],
+      "source": {
+        "title": "Original high-school biology practice"
+      }
+    },
+    {
+      "id": "cells-single-002",
+      "type": "single_choice",
+      "topicId": "cells",
+      "subtopicId": "photosynthesis",
+      "prompt": "Which substances do plants use to make glucose during photosynthesis?",
+      "options": [
+        {
+          "id": "carbon-dioxide-water",
+          "text": "Carbon dioxide and water",
+          "isCorrect": true,
+          "rationale": "Photosynthesis uses carbon dioxide and water, with energy from light, to make glucose."
+        },
+        {
+          "id": "oxygen-glucose",
+          "text": "Oxygen and glucose",
+          "isCorrect": false,
+          "rationale": "Glucose and oxygen are products of photosynthesis, not its starting substances."
+        },
+        {
+          "id": "nitrogen-oxygen",
+          "text": "Nitrogen and oxygen",
+          "isCorrect": false,
+          "rationale": "Neither nitrogen gas nor oxygen is a starting substance in the photosynthesis equation."
+        }
+      ],
+      "explanation": "In photosynthesis, light energy is used to turn carbon dioxide and water into glucose. Oxygen is released as a by-product.",
+      "difficulty": "easy",
+      "tags": ["cells", "photosynthesis"],
+      "source": {
+        "title": "Original high-school biology practice"
+      }
+    },
+    {
+      "id": "genetics-multi-001",
+      "type": "multiple_choice",
+      "topicId": "genetics",
+      "subtopicId": "cell-division",
+      "prompt": "Which statements about DNA copying and mitosis are correct?",
+      "options": [
+        {
+          "id": "copied-before",
+          "text": "DNA is copied before mitosis begins.",
+          "isCorrect": true,
+          "rationale": "DNA replication happens during interphase, before mitosis."
+        },
+        {
+          "id": "same-chromosomes",
+          "text": "The daughter cells usually have the same number of chromosomes as the parent cell.",
+          "isCorrect": true,
+          "rationale": "Mitosis separates copied chromosomes into two nuclei, preserving chromosome number."
+        },
+        {
+          "id": "half-chromosomes",
+          "text": "Mitosis halves the chromosome number to make gametes.",
+          "isCorrect": false,
+          "rationale": "Meiosis, rather than mitosis, halves the chromosome number when gametes form."
+        },
+        {
+          "id": "different-genes",
+          "text": "Mitosis normally produces daughter cells with different sets of genes.",
+          "isCorrect": false,
+          "rationale": "In the absence of mutations, mitosis produces genetically identical daughter cells."
+        }
+      ],
+      "explanation": "DNA is copied before mitosis. The copied chromosomes are then separated so that each daughter cell receives a complete set.",
+      "difficulty": "hard",
+      "tags": ["genetics", "cell division"],
+      "source": {
+        "title": "Original high-school biology practice"
+      }
+    },
+    {
+      "id": "cells-image-002",
       "type": "image_recognition",
-      "selectionMode": "single",
-      "topicId": "humanities",
-      "subtopicId": "history",
-      "prompt": "Which event is shown earliest on this sample timeline?",
+      "topicId": "cells",
+      "subtopicId": "cell-structure",
+      "prompt": "Which two structures are labelled A and B?",
+      "selectionMode": "multiple",
       "images": [
         {
-          "path": "images/history-timeline.svg",
-          "alt": "Timeline ordered left to right: printing press in Europe around 1450, first crewed Moon landing in 1969, and World Wide Web proposal in 1989"
+          "path": "images/animal-cell.webp",
+          "alt": "A cutaway illustration of an animal cell. A points to a large purple structure containing a darker round body, B to the outer boundary, and C to the pale blue material between the structures. Smaller orange structures have folded inner membranes."
         }
       ],
       "options": [
         {
-          "id": "printing",
-          "text": "Printing press in Europe",
+          "id": "nucleus",
+          "text": "Nucleus",
           "isCorrect": true,
-          "rationale": "Around 1450 precedes both 1969 and 1989."
+          "rationale": "A points to the nucleus near the center of the cell."
         },
         {
-          "id": "moon",
-          "text": "First crewed Moon landing",
-          "isCorrect": false,
-          "rationale": "1969 comes after around 1450."
+          "id": "membrane",
+          "text": "Cell membrane",
+          "isCorrect": true,
+          "rationale": "B points to the thin boundary surrounding the cell."
         },
         {
-          "id": "web",
-          "text": "World Wide Web proposal",
+          "id": "chloroplast",
+          "text": "Chloroplast",
           "isCorrect": false,
-          "rationale": "1989 is the latest date on this timeline."
+          "rationale": "This is an animal cell. It has no chloroplasts."
+        },
+        {
+          "id": "cell-wall",
+          "text": "Cell wall",
+          "isCorrect": false,
+          "rationale": "Animal cells have a cell membrane but no cell wall."
         }
       ],
-      "explanation": "Read the dates to compare chronological order. Around 1450 is the earliest date shown.",
+      "explanation": "A is the nucleus and B is the cell membrane. C marks the cytoplasm. These structures are found in typical animal cells.",
+      "difficulty": "medium",
+      "tags": ["cells", "cell structure"],
+      "source": {
+        "title": "Original high-school biology practice"
+      }
+    },
+    {
+      "id": "ecology-image-001",
+      "type": "image_recognition",
+      "topicId": "ecology",
+      "subtopicId": "food-chains",
+      "prompt": "Which organism is the primary consumer in this food chain?",
+      "selectionMode": "single",
+      "images": [
+        {
+          "path": "images/food-chain.webp",
+          "alt": "A food chain with arrows from grass to grasshopper, from grasshopper to frog, and from frog to snake. Arrows show the direction of energy transfer."
+        }
+      ],
+      "options": [
+        {
+          "id": "grasshopper",
+          "text": "Grasshopper",
+          "isCorrect": true,
+          "rationale": "The grasshopper eats the producer, grass, so it is the primary consumer."
+        },
+        {
+          "id": "frog",
+          "text": "Frog",
+          "isCorrect": false,
+          "rationale": "The frog eats the grasshopper, making it the secondary consumer in this chain."
+        },
+        {
+          "id": "grass",
+          "text": "Grass",
+          "isCorrect": false,
+          "rationale": "Grass makes its own food by photosynthesis, so it is the producer."
+        }
+      ],
+      "explanation": "A primary consumer feeds on a producer. Here, energy passes from grass to the grasshopper, then to the frog and snake.",
       "difficulty": "easy",
-      "tags": ["chronology", "image recognition"],
+      "tags": ["ecology", "food chains"],
       "source": {
-        "title": "Original cross-subject demo exercises",
-        "pageOrSlide": "9"
+        "title": "Original high-school biology practice"
       }
     },
     {
-      "id": "history-open-001",
+      "id": "ecology-open-001",
       "type": "open_ended",
-      "topicId": "humanities",
-      "subtopicId": "history",
-      "prompt": "What is a primary source in historical research?",
+      "topicId": "ecology",
+      "subtopicId": "populations",
+      "prompt": "How can a long-term shortage of food affect a rabbit population?",
       "acceptedAnswer": {
-        "display": "Evidence created during the period being studied or by someone directly involved in the events.",
-        "aliases": ["Firsthand evidence from the period"],
-        "feedback": "Give an example, such as a diary entry or an original letter."
+        "display": "The population may decrease because fewer rabbits survive and reproduce.",
+        "aliases": ["Fewer rabbits may survive or have offspring."],
+        "feedback": "Explain how food availability affects survival or reproduction."
       },
-      "explanation": "A primary source provides direct evidence about a historical question. Whether a source is primary depends on the research question.",
+      "explanation": "Food is a limiting factor. A sustained shortage can increase deaths, reduce reproduction, or cause rabbits to move elsewhere, reducing the local population.",
       "difficulty": "medium",
-      "tags": ["history", "sources"],
+      "tags": ["ecology", "populations"],
       "source": {
-        "title": "Original cross-subject demo exercises",
-        "pageOrSlide": "10"
+        "title": "Original high-school biology practice"
       }
     },
     {
-      "id": "history-single-001",
+      "id": "genetics-single-001",
       "type": "single_choice",
-      "topicId": "humanities",
-      "subtopicId": "history",
-      "prompt": "For a study of daily life in 1910, which is a primary source?",
+      "topicId": "genetics",
+      "subtopicId": "inheritance",
+      "prompt": "Two parents each have the alleles Bb. What is the chance that their child inherits bb?",
       "options": [
         {
-          "id": "diary",
-          "text": "A diary written in 1910",
+          "id": "one-quarter",
+          "text": "25%",
           "isCorrect": true,
-          "rationale": "It records firsthand observations from the period."
+          "rationale": "Each parent has a 1 in 2 chance of passing on b. Multiplying 1/2 by 1/2 gives 1/4."
         },
         {
-          "id": "textbook",
-          "text": "A modern textbook chapter about 1910",
+          "id": "one-half",
+          "text": "50%",
           "isCorrect": false,
-          "rationale": "It interprets earlier evidence and is a secondary source for this question."
+          "rationale": "50% is the chance that one parent passes on b, not that both do."
         },
         {
-          "id": "documentary",
-          "text": "A recent documentary about 1910",
+          "id": "three-quarters",
+          "text": "75%",
           "isCorrect": false,
-          "rationale": "It offers a later interpretation of the period."
+          "rationale": "75% is the chance of inheriting at least one B allele in this cross."
         }
       ],
-      "explanation": "A diary from the period can provide firsthand evidence of daily life. Its perspective and reliability still need evaluation.",
+      "explanation": "The four equally likely combinations are BB, Bb, bB, and bb. One out of four is bb, so the chance is 25%.",
       "difficulty": "medium",
-      "tags": ["history", "sources"],
+      "tags": ["genetics", "inheritance"],
       "source": {
-        "title": "Original cross-subject demo exercises",
-        "pageOrSlide": "11"
+        "title": "Original high-school biology practice"
       }
     },
     {
-      "id": "history-multi-001",
+      "id": "ecology-multi-001",
       "type": "multiple_choice",
-      "topicId": "humanities",
-      "subtopicId": "history",
-      "prompt": "Which questions help evaluate a historical source?",
+      "topicId": "ecology",
+      "subtopicId": "carbon-cycle",
+      "prompt": "Which processes return carbon dioxide to the atmosphere?",
       "options": [
         {
-          "id": "author",
-          "text": "Who created it, and when?",
+          "id": "respiration",
+          "text": "Cellular respiration",
           "isCorrect": true,
-          "rationale": "Authorship and timing help establish the source’s context."
+          "rationale": "Respiration releases carbon dioxide as organisms break down carbon-containing molecules."
         },
         {
-          "id": "audience",
-          "text": "Who was the intended audience?",
+          "id": "combustion",
+          "text": "Burning fossil fuels",
           "isCorrect": true,
-          "rationale": "Audience and purpose may influence what a source includes."
+          "rationale": "Combustion releases stored carbon as carbon dioxide."
         },
         {
-          "id": "age",
-          "text": "Does its age guarantee accuracy?",
+          "id": "photosynthesis",
+          "text": "Photosynthesis",
           "isCorrect": false,
-          "rationale": "Old sources can contain errors or biased accounts."
+          "rationale": "Photosynthesis takes carbon dioxide out of the atmosphere to build sugars."
         },
         {
-          "id": "agreement",
-          "text": "Must it agree with my view to be useful?",
+          "id": "biomass",
+          "text": "Storing carbon in growing wood",
           "isCorrect": false,
-          "rationale": "A source can challenge your interpretation and still be valuable evidence."
+          "rationale": "Carbon stored in growing wood is held in biomass rather than released to the atmosphere."
         }
       ],
-      "explanation": "Consider authorship, date, audience, purpose, and supporting evidence. Neither age nor agreement with your own view guarantees reliability.",
+      "explanation": "Respiration and combustion release carbon dioxide. Photosynthesis removes it, and some of that carbon can remain stored in plant biomass.",
       "difficulty": "hard",
-      "tags": ["history", "critical thinking"],
+      "tags": ["ecology", "carbon cycle"],
       "source": {
-        "title": "Original cross-subject demo exercises",
-        "pageOrSlide": "12"
+        "title": "Original high-school biology practice"
       }
     }
   ]

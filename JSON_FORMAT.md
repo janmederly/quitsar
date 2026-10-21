@@ -2,6 +2,8 @@
 
 This is the complete, human-editable bank contract for quitsar. Save UTF-8 `.json`. All imported JSON is **untrusted data**, never executable JavaScript/HTML/CSS. Text is rendered literally; Markdown/HTML formatting is not evaluated. The complete original educational demo is [`banks/demo.json`](banks/demo.json).
 
+The import screen’s **Format & AI guide** includes a copyable AI prompt, a field reference, the [JSON Schema](assets/question-bank.schema.json), and a [four-type example](assets/question-bank.example.json). The schema describes structural constraints; the app additionally checks unique IDs, topic references, real dates, and file-size limits. Image files are selected separately.
+
 ## Envelope and versioning
 
 ```json
@@ -102,7 +104,7 @@ All four fields are required. ID follows the shared rules; text and rationale ar
 ## Local images
 
 ```json
-{ "path": "images/annulus.svg", "alt": "Description of the relevant visible findings" }
+{ "path": "images/animal-cell.webp", "alt": "Description of the relevant visible findings" }
 ```
 
 Both fields required. Alt is nonempty text ≤2,000 characters and should convey useful visual information. Path is ≤300 characters and must:

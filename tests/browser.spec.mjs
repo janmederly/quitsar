@@ -15,9 +15,7 @@ test('public overview and generated metadata remain readable without JavaScript'
     );
     await page.goto('http://127.0.0.1:8080/');
     await expect(page.locator('main h1')).toHaveCount(1);
-    await expect(
-      page.getByRole('heading', { name: 'Your next question is a good place to start.' })
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Ready to study?' })).toBeVisible();
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
       'href',
       'https://study.example.org/'
@@ -33,30 +31,38 @@ test('public overview and generated metadata remain readable without JavaScript'
 });
 
 test('production HTML permits the app and JSON-LD under its content security policy', async ({
-  page
+  browser
 }) => {
-  const source = await readFile(new URL('../index.html', import.meta.url), 'utf8');
-  const { html } = seoFiles(source, { url: 'https://study.example.org' });
-  const violations = [];
-  await page.addInitScript(() => {
-    window.seoCspViolations = [];
-    document.addEventListener('securitypolicyviolation', (event) =>
-      window.seoCspViolations.push(event.violatedDirective)
+  // A fresh context ensures the generated HTML is tested, rather than the
+  // service worker's development shell installed by beforeEach.
+  const context = await browser.newContext({ serviceWorkers: 'block' });
+  const page = await context.newPage();
+  try {
+    const source = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+    const { html } = seoFiles(source, { url: 'https://study.example.org' });
+    const violations = [];
+    await page.addInitScript(() => {
+      window.seoCspViolations = [];
+      document.addEventListener('securitypolicyviolation', (event) =>
+        window.seoCspViolations.push(event.violatedDirective)
+      );
+    });
+    await page.route('http://127.0.0.1:8080/', (route) =>
+      route.fulfill({ contentType: 'text/html', body: html })
     );
-  });
-  await page.route('http://127.0.0.1:8080/', (route) =>
-    route.fulfill({ contentType: 'text/html', body: html })
-  );
-  await page.goto('/');
-  await expect(page.locator('#header-language')).toBeEnabled();
-  await go(page, 'Study');
-  await expect(page).toHaveTitle(/quitsar/);
-  violations.push(...(await page.evaluate(() => window.seoCspViolations)));
-  expect(violations).toEqual([]);
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
-    'href',
-    'https://study.example.org/'
-  );
+    await page.goto('/');
+    await expect(page.locator('#header-language')).toBeEnabled();
+    await go(page, 'Study');
+    await expect(page).toHaveTitle(/quitsar/);
+    violations.push(...(await page.evaluate(() => window.seoCspViolations)));
+    expect(violations).toEqual([]);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      'https://study.example.org/'
+    );
+  } finally {
+    await context.close();
+  }
 });
 
 test.beforeEach(async ({ page, context }) => {
@@ -71,7 +77,8 @@ test.beforeEach(async ({ page, context }) => {
     return route.continue();
   });
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'A little progress, every day.' })).toBeVisible();
+  await expect(page.locator('#header-language')).toBeEnabled();
+  await expect(page.getByRole('heading', { name: 'Your study space' })).toBeVisible();
 });
 async function go(page, name) {
   await page
@@ -81,26 +88,31 @@ async function go(page, name) {
 }
 async function loadDemo(page) {
   await go(page, 'Question banks');
-  await page.getByRole('button', { name: 'Load included demo bank' }).click();
+  await page.getByRole('button', { name: 'Try the demo bank' }).click();
   await expect(page.getByText('Demo saved locally with all images.')).toBeVisible();
 }
 async function exam(page, { count = 2, open = false, timer = false, changes = true } = {}) {
   await go(page, 'Exam simulator');
+  await page
+    .getByRole('listbox', { name: 'Question types' })
+    .selectOption(
+      open
+        ? ['open_ended', 'single_choice', 'multiple_choice']
+        : ['single_choice', 'multiple_choice']
+    );
   await page.getByLabel('Number of questions').fill(String(count));
   await page.getByLabel('Random question order').uncheck();
   await page.getByLabel('Use countdown timer').setChecked(timer);
   await page.getByLabel('Include open-ended self-assessment').setChecked(open);
-  await page.getByLabel('Allow answer changes before final submission').setChecked(changes);
-  await page.getByRole('button', { name: 'Preview exam' }).click();
+  await page.getByLabel('Allow answer changes before submitting').setChecked(changes);
+  await page.getByRole('button', { name: 'Preview exam', exact: true }).click();
   await page.getByRole('button', { name: 'Start exam', exact: true }).click();
   await expect(page.getByRole('heading', { name: `Question 1 of ${count}` })).toBeVisible();
 }
 async function submit(page) {
   await page.getByRole('button', { name: 'Submit exam', exact: true }).click();
   await page.getByRole('button', { name: 'Submit & save results' }).click();
-  await expect(
-    page.getByRole('heading', { name: 'A clearer picture of your progress.' })
-  ).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Exam results' })).toBeVisible();
 }
 async function records(page, store) {
   return page.evaluate(async (s) => {
@@ -108,6 +120,184 @@ async function records(page, store) {
     return db.all(s);
   }, store);
 }
+
+test('empty libraries start with biology questions and no invented progress', async ({ page }) => {
+  const banks = await records(page, 'banks');
+  expect(banks).toHaveLength(1);
+  expect(banks[0].id).toBe(demo.bank.id);
+  expect(banks[0].isDefaultDemo).toBe(true);
+  expect(banks[0].data.questions).toHaveLength(12);
+  expect(Object.keys(banks[0].assets).sort()).toEqual([
+    'images/animal-cell.webp',
+    'images/food-chain.webp'
+  ]);
+  for (const store of ['states', 'history', 'attempts', 'active'])
+    expect(await records(page, store)).toEqual([]);
+  await page.reload();
+  await expect(page.getByRole('button', { name: 'Start studying', exact: true })).toBeVisible();
+  expect(await records(page, 'banks')).toHaveLength(1);
+});
+
+test('the first demo image is a scored question without self-assessment controls', async ({
+  page
+}) => {
+  await go(page, 'Study');
+  await page.getByRole('button', { name: 'Start studying', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Which structure is labelled A?' })).toBeVisible();
+  const image = page.locator('.question-images img');
+  await expect(image).toBeVisible();
+  expect(await image.evaluate((node) => node.complete && node.naturalWidth > 0)).toBe(true);
+  await expect(page.getByRole('textbox')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Reveal answer', exact: true })).toHaveCount(0);
+  await page.getByRole('radio', { name: 'A Nucleus', exact: true }).check();
+  await page.getByRole('button', { name: 'Check answer', exact: true }).click();
+  await expect(page.getByText('✓ Correct', { exact: true })).toBeVisible();
+  const state = (await records(page, 'states')).find(
+    (state) => state.questionId === demo.questions[0].id
+  );
+  expect(state.lastObjectiveCorrect).toBe(true);
+  await expect(page.getByRole('button', { name: 'Know', exact: true })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Repeat', exact: true })).toHaveCount(0);
+});
+
+test('automatic demo updates preserve progress and explicit imports keep their version', async ({
+  page
+}) => {
+  await page.evaluate(async () => {
+    const db = await import('/js/storage.js');
+    const { DEMO_ID } = await import('/js/demo.js');
+    const bank = await db.get('banks', DEMO_ID);
+    bank.data.bank.version = '1.0.0';
+    bank.assets['images/legacy-cell.svg'] = {
+      mime: 'image/svg+xml',
+      data: '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
+    };
+    await db.put('banks', bank);
+    await db.put('states', {
+      id: JSON.stringify([DEMO_ID, 'cells-open-001']),
+      bankId: DEMO_ID,
+      questionId: 'cells-open-001',
+      flagged: true,
+      updatedAt: 1
+    });
+  });
+  await page.reload();
+  await expect(page.locator('#header-language')).toBeEnabled();
+  const [bank] = await records(page, 'banks');
+  expect(bank.data.bank.version).toBe(demo.bank.version);
+  expect(bank.assets['images/legacy-cell.svg'].mime).toBe('image/svg+xml');
+  expect((await records(page, 'states'))[0].flagged).toBe(true);
+  await page.evaluate(async () => {
+    const db = await import('/js/storage.js');
+    const { DEMO_ID } = await import('/js/demo.js');
+    const bank = await db.get('banks', DEMO_ID);
+    delete bank.isDefaultDemo;
+    bank.data.bank.version = '1.0.0';
+    await db.put('banks', bank);
+  });
+  await page.reload();
+  await expect(page.locator('#header-language')).toBeEnabled();
+  expect((await records(page, 'banks'))[0].data.bank.version).toBe('1.0.0');
+});
+
+test('imported material replaces only the automatic demo and stays selected after reload', async ({
+  page
+}) => {
+  const ownBank = structuredClone(demo);
+  ownBank.bank.id = 'my-course';
+  ownBank.bank.title = 'My biology course';
+  ownBank.questions = [ownBank.questions.find((question) => question.type === 'single_choice')];
+  await go(page, 'Question banks');
+  await page.getByLabel('Question bank JSON files').setInputFiles({
+    name: 'my-course.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify(ownBank))
+  });
+  await page.getByRole('button', { name: 'Import questions', exact: true }).click();
+  await expect(page.getByRole('heading', { name: ownBank.bank.title })).toBeVisible();
+  expect((await records(page, 'banks')).map((bank) => bank.id)).toEqual(['my-course']);
+  await page.reload();
+  await expect(page.locator('#header-language')).toBeEnabled();
+  expect((await records(page, 'banks')).map((bank) => bank.id)).toEqual(['my-course']);
+  await go(page, 'Exam simulator');
+  await expect(page.getByRole('heading', { name: 'Try a biology exam' })).toHaveCount(0);
+  await expect(page.getByLabel('Number of questions', { exact: true })).toHaveValue('1');
+  // A disabled bank is still imported material; it must not bring the default demo back.
+  await page.evaluate(async () => {
+    const db = await import('/js/storage.js');
+    const bank = await db.get('banks', 'my-course');
+    await db.put('banks', { ...bank, enabled: false });
+  });
+  await page.reload();
+  await expect(page.locator('#header-language')).toBeEnabled();
+  expect((await records(page, 'banks')).map((bank) => [bank.id, bank.enabled])).toEqual([
+    ['my-course', false]
+  ]);
+});
+
+test('biology exam examples preview and start real quizzes, timed exams and written practice', async ({
+  page
+}) => {
+  for (const [name, count, timer, written] of [
+    ['Quick quiz', 5, false, false],
+    ['Timed practice', 8, true, false],
+    ['Explain it yourself', 3, false, true]
+  ]) {
+    await go(page, 'Exam simulator');
+    await page.getByRole('button', { name: `Preview exam: ${name}`, exact: true }).click();
+    await expect(page.getByRole('dialog')).toContainText(demo.bank.title);
+    expect(await records(page, 'active')).toEqual([]);
+    await page.getByRole('button', { name: 'Start exam', exact: true }).click();
+    await expect(page.getByRole('heading', { name: `Question 1 of ${count}` })).toBeVisible();
+    const [active] = await records(page, 'active');
+    expect(active.items).toHaveLength(count);
+    expect(active.config.timer).toBe(timer);
+    expect(active.deadline === null).toBe(!timer);
+    expect(new Set(active.items.map((item) => item.question.id)).size).toBe(count);
+    expect(active.items.every((item) => item.bankId === demo.bank.id)).toBe(true);
+    expect(active.items.every((item) => (item.question.type === 'open_ended') === written)).toBe(
+      true
+    );
+    if (timer) expect(active.deadline - active.startedAt).toBe(10 * 60000);
+    await page.getByRole('button', { name: 'Save & return home' }).click();
+    await go(page, 'Exam simulator');
+    await page.getByRole('button', { name: 'Discard exam', exact: true }).click();
+  }
+  expect(await records(page, 'attempts')).toEqual([]);
+});
+
+test('an explicitly loaded demo stays alongside imported banks', async ({ page }) => {
+  await loadDemo(page);
+  const ownBank = structuredClone(demo);
+  ownBank.bank.id = 'another-course';
+  ownBank.bank.title = 'Another course';
+  await page.getByLabel('Question bank JSON files').setInputFiles({
+    name: 'another-course.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify(ownBank))
+  });
+  await page.getByRole('button', { name: 'Import questions', exact: true }).click();
+  await expect(page.getByRole('heading', { name: ownBank.bank.title })).toBeVisible();
+  expect((await records(page, 'banks')).map((bank) => bank.id).sort()).toEqual(
+    ['another-course', demo.bank.id].sort()
+  );
+});
+
+test('unavailable demo files leave the library usable for custom imports', async ({ browser }) => {
+  const context = await browser.newContext({ serviceWorkers: 'block' });
+  try {
+    const page = await context.newPage();
+    await page.route('**/banks/demo.json', (route) => route.fulfill({ status: 404, body: '' }));
+    await page.goto('http://127.0.0.1:8080');
+    await expect(page.locator('#header-language')).toBeEnabled();
+    await expect(page.getByRole('button', { name: 'Add questions', exact: true })).toBeVisible();
+    expect(await records(page, 'banks')).toEqual([]);
+    await go(page, 'Question banks');
+    await expect(page.getByRole('button', { name: 'Import questions', exact: true })).toBeEnabled();
+  } finally {
+    await context.close();
+  }
+});
 
 test('Google sign-in is available when the account service is configured', async ({ page }) => {
   await page.route('**/api/auth/session', (route) =>
@@ -121,10 +311,11 @@ test('Google sign-in is available when the account service is configured', async
     'href',
     '/api/auth/google'
   );
-  await expect(page.getByRole('heading', { name: 'A little progress, every day.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Your study space' })).toBeVisible();
   await page.setViewportSize({ width: 390, height: 844 });
   const accountToggle = page.getByRole('button', { name: 'Account & help', exact: true });
   await expect(accountToggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.getByRole('link', { name: 'Sign in with Google' })).toBeInViewport();
   await accountToggle.click();
   await expect(accountToggle).toHaveAttribute('aria-expanded', 'true');
   await expect(page.getByRole('link', { name: 'Sign in with Google' })).toBeVisible();
@@ -135,14 +326,14 @@ test('Google sign-in is available when the account service is configured', async
   await expect(page.locator('#sidebar-info')).toBeHidden();
 });
 
-test('empty dashboard, demo metadata, mobile layout and keyboard help', async ({ page }) => {
-  await expect(page.getByRole('heading', { name: 'A fresh start' })).toBeVisible();
+test('default biology bank, demo metadata, mobile layout and keyboard help', async ({ page }) => {
+  await expect(page.getByText(demo.bank.title, { exact: true })).toBeVisible();
   await loadDemo(page);
   await page.getByRole('button', { name: 'Inspect', exact: true }).click();
   await expect(page.getByRole('dialog')).toContainText('12');
   await page.keyboard.press('Escape');
   await go(page, 'Overview');
-  await expect(page.getByRole('heading', { name: 'A little progress, every day.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Your study space' })).toBeVisible();
   await page.screenshot({ path: 'test-results/dashboard-desktop.png', fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.screenshot({ path: 'test-results/dashboard-mobile.png', fullPage: true });
@@ -151,40 +342,35 @@ test('empty dashboard, demo metadata, mobile layout and keyboard help', async ({
   await expect(page.getByRole('dialog')).toContainText('Alt + N');
   await page.keyboard.press('Escape');
 });
-test('open reveal, Know, flagged review, image and persistent schedule', async ({ page }) => {
+test('open reveal, Know, flagged review and persistent schedule', async ({ page }) => {
   await loadDemo(page);
   await go(page, 'Study');
   await page.getByRole('listbox', { name: 'Question types' }).selectOption('open_ended');
-  await page.getByRole('button', { name: 'Start session' }).click();
-  await expect(page.locator('.question-images img')).toBeVisible();
-  expect(
-    await page
-      .locator('.question-images img')
-      .evaluate((img) => img.complete && img.naturalWidth > 0)
-  ).toBe(true);
-  await page.getByRole('textbox').fill('A ring-shaped region');
+  await page.getByRole('button', { name: 'Start studying' }).click();
+  await page.getByRole('textbox').fill('It contains DNA and controls cell activities.');
   await page.keyboard.press('Alt+f');
   await page.keyboard.press('Alt+r');
-  await expect(page.getByText('Official answer', { exact: true })).toBeVisible();
+  await expect(page.getByText('Suggested answer', { exact: true })).toBeVisible();
   await page.keyboard.press('Alt+2');
   await expect(page.getByText(/Saved · Next due/)).toBeVisible();
   let states = await records(page, 'states');
-  expect(states[0].interval).toBe(1440);
+  expect(states[0].interval).toBeGreaterThanOrEqual(1440);
+  expect(states[0].fsrs.state).toBe(2);
   expect(states[0].flagged).toBe(true);
   expect(states[0].repetitions).toBe(1);
   await page.reload();
   await go(page, 'Review queue');
-  await page.getByRole('combobox', { name: 'Review queue' }).selectOption('flagged');
+  await page.getByRole('button', { name: /Flagged questions/ }).click();
   await expect(page.getByText('1 eligible questions')).toBeVisible();
 });
 test('choice study requires selection and shows every rationale', async ({ page }) => {
   await loadDemo(page);
   await go(page, 'Study');
   await page.getByRole('listbox', { name: 'Question types' }).selectOption('single_choice');
-  await page.getByRole('button', { name: 'Start session' }).click();
+  await page.getByRole('button', { name: 'Start studying' }).click();
   await page.getByRole('button', { name: 'Check answer' }).click();
   await expect(page.getByRole('alert')).toContainText('Choose an answer');
-  await page.getByRole('radio', { name: 'B Linear', exact: true }).check();
+  await page.getByRole('radio', { name: 'B Nucleus', exact: true }).check();
   await page.getByRole('button', { name: 'Check answer' }).click();
   await expect(page.getByText('✕ Incorrect or unanswered')).toBeVisible();
   await expect(page.locator('.rationale')).toHaveCount(3);
@@ -197,18 +383,20 @@ test('exam autosave and resume, hidden feedback, strict and partial results, exp
 }) => {
   await loadDemo(page);
   await exam(page);
-  await page.getByRole('radio', { name: 'A Annular', exact: true }).check();
-  await expect(page.getByText('Annular describes a ring-shaped arrangement.')).toHaveCount(0);
+  await page.getByRole('radio', { name: 'A Mitochondrion', exact: true }).check();
+  await expect(
+    page.getByText(
+      'Most stages of aerobic respiration take place in mitochondria, producing ATP that the cell can use.'
+    )
+  ).toHaveCount(0);
   await page.getByRole('button', { name: 'Next →', exact: true }).click();
-  await page.getByRole('checkbox', { name: 'A A ring-shaped region', exact: true }).check();
+  await page.getByRole('checkbox', { name: 'A Cell wall', exact: true }).check();
   await expect(
     page.locator('.exam-aside').getByText('✓ Progress saved locally', { exact: true })
   ).toBeVisible();
   await page.reload();
   await page.getByRole('button', { name: 'Resume exam' }).click();
-  await expect(
-    page.getByRole('checkbox', { name: 'A A ring-shaped region', exact: true })
-  ).toBeChecked();
+  await expect(page.getByRole('checkbox', { name: 'A Cell wall', exact: true })).toBeChecked();
   await submit(page);
   const strictScore = page.locator('.stat').filter({ hasText: 'Strict score' });
   await expect(strictScore.locator('strong')).toHaveText('1/2');
@@ -243,32 +431,30 @@ test('timer expiration submits exactly once across refresh and retains results',
     await db.put('active', active);
   });
   await page.reload();
-  await expect(
-    page.getByRole('heading', { name: 'A clearer picture of your progress.' })
-  ).toBeVisible({ timeout: 10000 });
+  await expect(page.getByRole('heading', { name: 'Exam results' })).toBeVisible({ timeout: 10000 });
   const attempts = await records(page, 'attempts');
   expect(attempts.length).toBe(1);
   expect(attempts[0].automatic).toBe(true);
   expect(attempts[0].remaining).toBe(0);
   await page.reload();
-  await expect(page.getByRole('heading', { name: 'A little progress, every day.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Your study space' })).toBeVisible();
   expect((await records(page, 'attempts')).length).toBe(1);
 });
 test('answer locking, open self-assessment and exam review queue', async ({ page }) => {
   await loadDemo(page);
   await exam(page, { count: 2, open: true, changes: false });
-  await page.getByRole('textbox').fill('A ring-shaped region');
+  await page.getByRole('textbox').fill('It contains DNA and controls cell activities.');
   await page.getByRole('button', { name: 'Save answer', exact: true }).click();
   await expect(page.getByRole('textbox')).toBeDisabled();
   await page.getByRole('button', { name: 'Next →', exact: true }).click();
-  await page.getByRole('radio', { name: 'A Annular', exact: true }).check();
+  await page.getByRole('radio', { name: 'A Mitochondrion', exact: true }).check();
   await submit(page);
   const strictScore = page.locator('.stat').filter({ hasText: 'Strict score' });
   await expect(strictScore.locator('strong')).toHaveText('1/1');
   await expect(strictScore.locator('small')).toHaveText('100.0%');
   await page.getByRole('button', { name: 'Know', exact: true }).click();
   await expect(page.getByText(/Self-assessed: Know/)).toBeVisible();
-  await page.getByRole('button', { name: 'Add to review queue', exact: true }).first().click();
+  await page.getByRole('button', { name: 'Save for later', exact: true }).first().click();
   expect((await records(page, 'states')).some((s) => s.flagged)).toBe(true);
   await page.getByRole('button', { name: 'Review this exam' }).click();
   await expect(page.getByText('2 eligible questions')).toBeVisible();
@@ -328,23 +514,24 @@ test('bank validation, missing image, safe imported text and sanitized SVG', asy
   const bank = structuredClone(demo);
   bank.bank.id = 'safe-import';
   bank.questions = [bank.questions[0]];
+  bank.questions[0].images[0].path = 'images/animal-cell.svg';
   bank.questions[0].prompt = '<img src="https://evil.test/x" onerror="alert(1)">';
   await page.getByLabel('Question bank JSON files').setInputFiles({
     name: 'bank.json',
     mimeType: 'application/json',
     buffer: Buffer.from(JSON.stringify(bank))
   });
-  await page.getByRole('button', { name: 'Validate & import' }).click();
+  await page.getByRole('button', { name: 'Import questions' }).click();
   await expect(page.getByText(/saved 1 questions/)).toBeVisible();
   await go(page, 'Study');
-  await page.getByRole('button', { name: 'Start session' }).click();
+  await page.getByRole('button', { name: 'Start studying' }).click();
   await expect(page.locator('.prompt')).toHaveText(bank.questions[0].prompt);
-  await expect(page.getByText(/Image unavailable: images\/annulus.svg/)).toBeVisible();
+  await expect(page.getByText(/Image unavailable: images\/animal-cell.svg/)).toBeVisible();
   expect(await page.locator('.prompt img').count()).toBe(0);
   await go(page, 'Question banks');
-  await page.getByText('Attach / replace local images').click();
-  await page.getByLabel('Attach images for Across Subjects · Demo').setInputFiles({
-    name: 'annulus.svg',
+  await page.getByText('Add or replace images').click();
+  await page.getByLabel('Attach images for Biology · High-school practice').setInputFiles({
+    name: 'animal-cell.svg',
     mimeType: 'image/svg+xml',
     buffer: Buffer.from(
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><script>alert(1)</script><image href="https://evil.test/x"/><circle cx="10" cy="10" r="5" fill="red" onload="alert(1)"/></svg>'
@@ -354,7 +541,7 @@ test('bank validation, missing image, safe imported text and sanitized SVG', asy
     page.locator('.toast').filter({ hasText: 'Selected matching images saved locally.' })
   ).toBeVisible();
   const banks = await records(page, 'banks');
-  const svg = banks[0].assets['images/annulus.svg'].data;
+  const svg = banks[0].assets['images/animal-cell.svg'].data;
   expect(svg).not.toMatch(/script|onload|evil\.test|<image/);
   expect(svg).toContain('circle');
 });
@@ -367,22 +554,22 @@ test('backup export and validated restore preview are idempotent', async ({ page
   const content = await readFile(await file.path());
   const parsed = JSON.parse(content);
   expect(parsed.records.banks.length).toBe(1);
-  expect(Object.keys(parsed.records.banks[0].assets).length).toBe(3);
+  expect(Object.keys(parsed.records.banks[0].assets).length).toBe(2);
   await page
     .getByLabel('Backup or study-data JSON')
     .setInputFiles({ name: 'backup.json', mimeType: 'application/json', buffer: content });
-  await page.getByRole('button', { name: 'Validate & preview merge' }).click();
-  await expect(page.getByRole('heading', { name: 'Ready to merge' })).toBeVisible();
+  await page.getByRole('button', { name: 'Preview restore' }).click();
+  await expect(page.getByRole('heading', { name: 'Review your backup' })).toBeVisible();
   expect((await records(page, 'banks')).length).toBe(1);
-  await page.getByRole('button', { name: 'Confirm merge' }).click();
+  await page.getByRole('button', { name: 'Restore backup' }).click();
   await expect(page.getByText(/Restore complete/)).toBeVisible();
   expect((await records(page, 'banks')).length).toBe(1);
   await page.evaluate(async () => {
     const db = await import('/js/storage.js');
     await db.clear('banks');
   });
-  await page.getByRole('button', { name: 'Validate & preview merge' }).click();
-  await page.getByRole('button', { name: 'Confirm merge' }).click();
+  await page.getByRole('button', { name: 'Preview restore' }).click();
+  await page.getByRole('button', { name: 'Restore backup' }).click();
   await expect(page.getByText(/Restore complete/)).toBeVisible();
   expect((await records(page, 'banks')).length).toBe(1);
 });
@@ -403,7 +590,7 @@ test('theme persists, disabled banks excluded, invalid JSON rejected', async ({ 
   await page
     .getByLabel('Question bank JSON files')
     .setInputFiles({ name: 'bad.json', mimeType: 'application/json', buffer: Buffer.from('{bad') });
-  await page.getByRole('button', { name: 'Validate & import' }).click();
+  await page.getByRole('button', { name: 'Import questions' }).click();
   await expect(page.getByText(/malformed JSON/)).toBeVisible();
   expect((await records(page, 'banks')).length).toBe(1);
 });
@@ -411,14 +598,18 @@ test('offline app shell and demo stay available with network disconnected', asyn
   page,
   context
 }) => {
-  await expect(page.locator('.local-label')).toContainText('Offline cache ready');
+  await expect(page.locator('.local-label')).toContainText('Offline ready');
   await context.setOffline(true);
   await page.reload();
-  await expect(page.getByRole('heading', { name: 'A little progress, every day.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Your study space' })).toBeVisible();
   await loadDemo(page);
   await go(page, 'Study');
-  await page.getByRole('button', { name: 'Start session' }).click();
+  await page.getByRole('button', { name: 'Start studying' }).click();
   await expect(page.locator('.question-images img')).toBeVisible();
+  await page.getByRole('radio', { name: 'A Nucleus', exact: true }).check();
+  await page.getByRole('button', { name: 'Check answer', exact: true }).click();
+  await expect(page.getByText(/Saved · Next due/)).toBeVisible();
+  expect((await records(page, 'states'))[0].fsrs.state).toBe(2);
 });
 test('bank version update retains study history and duplicate import is confirmed', async ({
   page
@@ -426,13 +617,13 @@ test('bank version update retains study history and duplicate import is confirme
   await loadDemo(page);
   await go(page, 'Study');
   await page.getByRole('listbox', { name: 'Question types' }).selectOption('open_ended');
-  await page.getByRole('button', { name: 'Start session' }).click();
+  await page.getByRole('button', { name: 'Start studying' }).click();
   await page.getByRole('button', { name: 'Reveal answer' }).click();
   await page.getByRole('button', { name: 'Repeat', exact: true }).click();
   await expect(page.getByText(/Saved · Next due/)).toBeVisible();
   const before = await records(page, 'states');
   const updated = structuredClone(demo);
-  updated.bank.version = '1.1.0';
+  updated.bank.version = '1.2.0';
   updated.questions[0].prompt += ' Updated example.';
   await go(page, 'Question banks');
   await page.getByLabel('Question bank JSON files').setInputFiles({
@@ -440,8 +631,12 @@ test('bank version update retains study history and duplicate import is confirme
     mimeType: 'application/json',
     buffer: Buffer.from(JSON.stringify(updated))
   });
-  await page.getByRole('button', { name: 'Validate & import' }).click();
-  await expect(page.getByText('Updated 1.0.0 → 1.1.0; study history retained.')).toBeVisible();
+  await page.getByRole('button', { name: 'Import questions' }).click();
+  await expect(
+    page.getByText(
+      `Updated ${demo.bank.version} → ${updated.bank.version}; study history retained.`
+    )
+  ).toBeVisible();
   expect(await records(page, 'states')).toEqual(before);
   expect((await records(page, 'banks')).length).toBe(1);
 });
@@ -454,10 +649,10 @@ test('repeat-count configuration, skip, flag, and print review remain usable on 
   await page.getByRole('listbox', { name: 'Question types' }).selectOption('single_choice');
   await page.getByLabel('Number of questions').fill('5');
   await page.getByLabel('Use countdown timer').uncheck();
-  await page.getByRole('button', { name: 'Preview exam' }).click();
+  await page.getByRole('button', { name: 'Preview exam', exact: true }).click();
   await expect(page.getByRole('alert')).toContainText('Only 3 questions');
-  await page.getByLabel('Allow repeats when count exceeds eligible questions').check();
-  await page.getByRole('button', { name: 'Preview exam' }).click();
+  await page.getByLabel('Allow repeated questions if needed').check();
+  await page.getByRole('button', { name: 'Preview exam', exact: true }).click();
   await page.getByRole('button', { name: 'Start exam', exact: true }).click();
   await page.getByRole('button', { name: '⚐ Flag', exact: true }).click();
   await page.getByRole('button', { name: 'Skip question' }).click();
@@ -502,7 +697,7 @@ test('pending storage writes guard refresh and can finish after cancellation', a
       tx.oncomplete = () => db.close();
     };
   });
-  await page.getByRole('radio', { name: 'A Annular', exact: true }).check();
+  await page.getByRole('radio', { name: 'A Mitochondrion', exact: true }).check();
   await page.reload({ timeout: 5000, waitUntil: 'commit' }).catch(() => {});
   expect(guarded).toBe(true);
   await expect(
@@ -510,7 +705,7 @@ test('pending storage writes guard refresh and can finish after cancellation', a
   ).toBeVisible({ timeout: 10000 });
   await page.reload();
   await page.getByRole('button', { name: 'Resume exam' }).click();
-  await expect(page.getByRole('radio', { name: 'A Annular', exact: true })).toBeChecked();
+  await expect(page.getByRole('radio', { name: 'A Mitochondrion', exact: true })).toBeChecked();
 });
 
 test('Slovak interface persists, preserves bank content and supports study and exams offline', async ({
@@ -541,26 +736,24 @@ test('Slovak interface persists, preserves bank content and supports study and e
     'value',
     'easy'
   );
-  await page.getByRole('button', { name: 'Začať učenie →' }).click();
+  await page.getByRole('button', { name: 'Začať sa učiť' }).click();
   await expect(page.getByRole('heading', { name: /^Otázka 1 z/ })).toBeVisible();
   await expect(
     page.getByRole('heading', { name: demo.questions[0].prompt, exact: true })
   ).toBeVisible();
   const skip = page.getByRole('button', { name: 'Preskočiť', exact: true });
   await skip.click();
-  await expect(page.getByText('Preskočené · Uložené medzi preskočené otázky')).toBeVisible();
+  await expect(page.getByText('Preskočené · Nájdete v časti Rýchle opakovanie')).toBeVisible();
   await navigate('Simulátor skúšky');
   await page.getByLabel('Počet otázok', { exact: true }).fill('1');
   await page.getByLabel('Použiť odpočítavanie času').uncheck();
-  await page.getByRole('button', { name: 'Náhľad skúšky →' }).click();
+  await page.getByRole('button', { name: 'Náhľad skúšky', exact: true }).click();
   await expect(page.getByRole('dialog')).toContainText('Môžeme začať?');
   await page.getByRole('button', { name: 'Začať skúšku', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Otázka 1 z 1', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Odovzdať skúšku', exact: true }).click();
   await page.getByRole('button', { name: 'Odovzdať a uložiť výsledky' }).click();
-  await expect(
-    page.getByRole('heading', { name: 'Jasnejší obraz o vašom pokroku.' })
-  ).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Výsledky skúšky' })).toBeVisible();
   for (const name of ['Otázky na opakovanie', 'Výsledky a štatistiky', 'Zálohovanie a export']) {
     await navigate(name);
     await expect(page.locator('#section-name')).toHaveText(name);
@@ -579,8 +772,8 @@ test('Slovak interface persists, preserves bank content and supports study and e
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('lang', 'sk');
   await navigate('Prehľad');
-  await expect(page.getByRole('heading', { name: 'Každý deň o krok ďalej.' })).toBeVisible();
-  await expect(page.locator('.local-label')).toContainText('Offline pamäť je pripravená');
+  await expect(page.getByRole('heading', { name: 'Váš priestor na učenie' })).toBeVisible();
+  await expect(page.locator('.local-label')).toContainText('Dostupné offline');
   await navigate('Nastavenia');
   await page.getByLabel('Jazyk rozhrania').selectOption('en');
   await page.getByRole('button', { name: 'Uložiť nastavenia', exact: true }).click();
@@ -596,7 +789,7 @@ test('Slovak browser preference applies on first visit', async ({ browser }) => 
   try {
     const page = await context.newPage();
     await page.goto('/');
-    await expect(page.getByRole('heading', { name: 'Každý deň o krok ďalej.' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Váš priestor na učenie' })).toBeVisible();
     await expect(page.locator('html')).toHaveAttribute('lang', 'sk');
   } finally {
     await context.close();
@@ -606,10 +799,23 @@ test('Slovak browser preference applies on first visit', async ({ browser }) => 
 test('header language selector is immediately available on desktop and mobile', async ({
   page
 }) => {
+  await page.route('**/api/auth/session', (route) =>
+    route.fulfill({ json: { user: null, googleEnabled: true } })
+  );
+  await page.reload();
   const header = page.getByRole('banner');
+  await expect(header.locator('.language-picker > span')).toHaveText('Language');
+  for (const width of [320, 700, 901, 1024, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await expect(header.getByRole('combobox', { name: 'Language', exact: true })).toBeInViewport();
+    await expect(page.getByRole('link', { name: 'Sign in with Google' })).toBeInViewport();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true
+    );
+  }
   await expect(header.getByRole('combobox', { name: 'Language', exact: true })).toBeEnabled();
   await header.getByRole('combobox', { name: 'Language', exact: true }).selectOption('sk');
-  await expect(page.getByRole('heading', { name: 'Každý deň o krok ďalej.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Váš priestor na učenie' })).toBeVisible();
   await expect(header.getByRole('combobox', { name: 'Jazyk', exact: true })).toHaveValue('sk');
   await expect(page.locator('html')).toHaveAttribute('lang', 'sk');
   await page.setViewportSize({ width: 320, height: 740 });
@@ -618,13 +824,13 @@ test('header language selector is immediately available on desktop and mobile', 
   await page.reload();
   await expect(header.getByRole('combobox', { name: 'Jazyk', exact: true })).toHaveValue('sk');
   await header.getByRole('combobox', { name: 'Jazyk', exact: true }).selectOption('cs');
-  await expect(page.getByRole('heading', { name: 'Každý den o krok dál.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Váš prostor pro učení' })).toBeVisible();
   await expect(page.locator('html')).toHaveAttribute('lang', 'cs');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.reload();
   await expect(header.getByRole('combobox', { name: 'Jazyk', exact: true })).toHaveValue('cs');
   await header.getByRole('combobox', { name: 'Jazyk', exact: true }).selectOption('en');
-  await expect(page.getByRole('heading', { name: 'A little progress, every day.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Your study space' })).toBeVisible();
   await go(page, 'Settings');
   await expect(page.getByLabel('Interface language')).toHaveValue('en');
   expect((await records(page, 'settings')).find((row) => row.id === 'preferences').language).toBe(
@@ -660,26 +866,24 @@ test('Czech interface persists, preserves bank content and supports study and ex
     'value',
     'easy'
   );
-  await page.getByRole('button', { name: 'Začít učení →' }).click();
+  await page.getByRole('button', { name: 'Začít se učit' }).click();
   await expect(page.getByRole('heading', { name: /^Otázka 1 z/ })).toBeVisible();
   await expect(
     page.getByRole('heading', { name: demo.questions[0].prompt, exact: true })
   ).toBeVisible();
   const skip = page.getByRole('button', { name: 'Přeskočit', exact: true });
   await skip.click();
-  await expect(page.getByText('Přeskočeno · Uloženo mezi přeskočené otázky')).toBeVisible();
+  await expect(page.getByText('Přeskočeno · Najdete v části Rychlé opakování')).toBeVisible();
   await navigate('Simulátor zkoušky');
   await page.getByLabel('Počet otázek', { exact: true }).fill('1');
   await page.getByLabel('Použít odpočítávání času').uncheck();
-  await page.getByRole('button', { name: 'Náhled zkoušky →' }).click();
+  await page.getByRole('button', { name: 'Náhled zkoušky', exact: true }).click();
   await expect(page.getByRole('dialog')).toContainText('Můžeme začít?');
   await page.getByRole('button', { name: 'Začít zkoušku', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Otázka 1 z 1', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Odevzdat zkoušku', exact: true }).click();
   await page.getByRole('button', { name: 'Odevzdat a uložit výsledky' }).click();
-  await expect(
-    page.getByRole('heading', { name: 'Jasnější obraz o vašem pokroku.' })
-  ).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Výsledky zkoušky' })).toBeVisible();
   for (const name of ['Otázky k opakování', 'Výsledky a statistiky', 'Zálohování a export']) {
     await navigate(name);
     await expect(page.locator('#section-name')).toHaveText(name);
@@ -698,8 +902,8 @@ test('Czech interface persists, preserves bank content and supports study and ex
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('lang', 'cs');
   await navigate('Přehled');
-  await expect(page.getByRole('heading', { name: 'Každý den o krok dál.' })).toBeVisible();
-  await expect(page.locator('.local-label')).toContainText('Offline mezipaměť je připravena');
+  await expect(page.getByRole('heading', { name: 'Váš prostor pro učení' })).toBeVisible();
+  await expect(page.locator('.local-label')).toContainText('Dostupné offline');
   await navigate('Nastavení');
   await page.getByLabel('Jazyk rozhraní').selectOption('en');
   await page.getByRole('button', { name: 'Uložit nastavení', exact: true }).click();
@@ -715,7 +919,7 @@ test('Czech browser preference applies on first visit', async ({ browser }) => {
   try {
     const page = await context.newPage();
     await page.goto('/');
-    await expect(page.getByRole('heading', { name: 'Každý den o krok dál.' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Váš prostor pro učení' })).toBeVisible();
     await expect(page.locator('html')).toHaveAttribute('lang', 'cs');
   } finally {
     await context.close();
@@ -726,7 +930,7 @@ for (const [language, locale, home, settings, interfaceLanguage, save, banks] of
   [
     'de',
     'de-DE',
-    'Jeden Tag ein kleiner Fortschritt.',
+    'Ihr Lernbereich',
     'Einstellungen',
     'Sprache der Benutzeroberfläche',
     'Einstellungen speichern',
@@ -735,7 +939,7 @@ for (const [language, locale, home, settings, interfaceLanguage, save, banks] of
   [
     'es',
     'es-ES',
-    'Un pequeño avance cada día.',
+    'Tu espacio de estudio',
     'Ajustes',
     'Idioma de la interfaz',
     'Guardar ajustes',
@@ -744,7 +948,7 @@ for (const [language, locale, home, settings, interfaceLanguage, save, banks] of
   [
     'fr',
     'fr-FR',
-    'Un petit progrès chaque jour.',
+    'Votre espace de révision',
     'Paramètres',
     'Langue de l’interface',
     'Enregistrer les paramètres',
@@ -839,7 +1043,7 @@ test('malformed legacy records have export and removal recovery without crashing
   ).toHaveCount(0);
   expect(await records(page, 'active')).toEqual([]);
   await page.reload();
-  await expect(page.getByRole('heading', { name: 'A little progress, every day.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Your study space' })).toBeVisible();
   expect(errors).toEqual([]);
 });
 
@@ -880,12 +1084,371 @@ test('a library larger than the restore limit exports independently restorable p
   await page.evaluate(async () => (await import('/js/storage.js')).clear('history'));
   for (const part of parts) {
     await page.getByLabel('Backup or study-data JSON', { exact: true }).setInputFiles(part);
-    await page.getByRole('button', { name: 'Validate & preview merge' }).click();
-    await expect(page.getByRole('heading', { name: 'Ready to merge' })).toBeVisible();
-    await page.getByRole('button', { name: 'Confirm merge', exact: true }).click();
+    await page.getByRole('button', { name: 'Preview restore' }).click();
+    await expect(page.getByRole('heading', { name: 'Review your backup' })).toBeVisible();
+    await page.getByRole('button', { name: 'Restore backup', exact: true }).click();
     await expect(
       page.getByText('Restore complete. Records merged into local storage.', { exact: true })
     ).toBeVisible();
   }
   expect((await records(page, 'history')).length).toBe(28);
+});
+
+test('review groups share progress, preserve skipped schedules, and relearn mature mistakes', async ({
+  page
+}) => {
+  await loadDemo(page);
+  const seeded = await page.evaluate(async () => {
+    const db = await import('/js/storage.js');
+    const { keyFor } = await import('/js/spaced-repetition.js');
+    const bank = (await db.all('banks')).find((b) => b.enabled);
+    const question = bank.data.questions.find((q) => q.type === 'single_choice');
+    const now = Date.now();
+    const state = {
+      id: keyFor(bank.id, question.id),
+      bankId: bank.id,
+      bankVersion: bank.data.bank.version,
+      questionId: question.id,
+      flagged: true,
+      skipped: true,
+      lastObjectiveCorrect: false,
+      repetitions: 8,
+      timesSeen: 8,
+      interval: 64 * 1440,
+      due: now - 1000,
+      lastReviewed: now - 64 * 86400000,
+      updatedAt: now
+    };
+    await db.put('states', state);
+    return { state, correct: question.options.find((o) => o.isCorrect).text };
+  });
+  await go(page, 'Review queue');
+  await expect(page.getByRole('button', { name: /Spaced repetition/ })).toHaveAttribute(
+    'aria-pressed',
+    'true'
+  );
+  for (const name of [
+    'Spaced repetition',
+    'Incorrect answers',
+    'Flagged questions',
+    'Skipped questions'
+  ])
+    await expect(page.getByRole('button', { name: new RegExp(name) }).locator('strong')).toHaveText(
+      '1'
+    );
+  await page.getByRole('button', { name: 'Review due questions', exact: true }).click();
+  await page.getByRole('button', { name: 'Skip', exact: true }).click();
+  await expect(
+    page.getByText('Skipped · Find this in Review queue → Skipped questions', { exact: true })
+  ).toBeVisible();
+  let state = (await records(page, 'states')).find((s) => s.id === seeded.state.id);
+  expect(state.due).toBe(seeded.state.due);
+  expect(state.repetitions).toBe(8);
+  expect(state.fsrs).toBeUndefined();
+  await page.getByRole('button', { name: 'Finish session', exact: true }).click();
+  await page.getByRole('button', { name: 'Back to review', exact: true }).click();
+  await page.getByRole('button', { name: /Skipped questions/ }).click();
+  await page.getByRole('button', { name: 'Start review', exact: true }).click();
+  await page.getByRole('radio', { name: 'B Nucleus', exact: true }).check();
+  await page.getByRole('button', { name: 'Check answer', exact: true }).click();
+  await expect(page.getByText(/Saved · Next due/)).toBeVisible();
+  state = (await records(page, 'states')).find((s) => s.id === seeded.state.id);
+  expect(state.interval).toBe(10);
+  expect(state.fsrs.state).toBe(3);
+  expect(state.skipped).toBe(false);
+  expect(state.flagged).toBe(true);
+  expect(state.lastObjectiveCorrect).toBe(false);
+  await page.getByRole('button', { name: 'Finish session', exact: true }).click();
+  await expect(
+    page.getByRole('heading', { name: 'No reviews due now', exact: true })
+  ).toBeVisible();
+  await expect(page.getByText(/Next review:/)).toBeVisible();
+  await page.getByRole('button', { name: 'Back to review', exact: true }).click();
+  await expect(
+    page.getByRole('button', { name: /Skipped questions/ }).locator('strong')
+  ).toHaveText('0');
+  await page.getByRole('button', { name: /Incorrect answers/ }).click();
+  await page.getByRole('button', { name: 'Start review', exact: true }).click();
+  await page.getByRole('radio', { name: 'A Mitochondrion', exact: true }).check();
+  await page.getByRole('button', { name: 'Check answer', exact: true }).click();
+  await expect(page.getByText(/Saved · Next due/)).toBeVisible();
+  await page.getByRole('button', { name: 'End session', exact: true }).click();
+  await expect(
+    page.getByRole('button', { name: /Incorrect answers/ }).locator('strong')
+  ).toHaveText('0');
+  await expect(
+    page.getByRole('button', { name: /Flagged questions/ }).locator('strong')
+  ).toHaveText('1');
+  await page.getByRole('button', { name: /Flagged questions/ }).click();
+  await page.getByRole('button', { name: 'Start review', exact: true }).click();
+  await page.getByRole('button', { name: '⚑ Flagged', exact: true }).click();
+  await page.getByRole('button', { name: 'End session', exact: true }).click();
+  await expect(
+    page.getByRole('button', { name: /Flagged questions/ }).locator('strong')
+  ).toHaveText('0');
+  await expect(page.getByRole('button', { name: 'Start review', exact: true })).toBeDisabled();
+});
+
+test('study offers topic practice, new questions, and a bounded session with interval previews', async ({
+  page
+}) => {
+  await loadDemo(page);
+  await go(page, 'Study');
+  await expect(page.getByRole('heading', { name: 'Practice a topic', exact: true })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Review groups' })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Practice', exact: true }).first().click();
+  await expect(page.getByRole('listbox', { name: 'Topics' }).locator('option:checked')).toHaveCount(
+    1
+  );
+  await page.getByRole('button', { name: 'Learn new questions', exact: true }).click();
+  await expect(page.getByRole('combobox', { name: 'Question selection', exact: true })).toHaveValue(
+    'new'
+  );
+  await page.getByRole('listbox', { name: 'Question types' }).selectOption('open_ended');
+  await page.getByRole('spinbutton', { name: 'Session size' }).fill('1');
+  await page.getByRole('button', { name: 'Start studying', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Question 1 of 1', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Reveal answer', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Repeat', exact: true })).toContainText('10 min');
+  await expect(page.getByRole('button', { name: 'Know', exact: true })).toHaveAttribute(
+    'title',
+    /Next review:/
+  );
+  await page.getByRole('button', { name: 'Know', exact: true }).click();
+  await expect(page.getByText(/Saved · Next due/)).toBeVisible();
+  await page.getByRole('button', { name: 'End session', exact: true }).click();
+  await page.getByRole('button', { name: 'Learn new questions', exact: true }).click();
+  await expect(page.getByText('11 eligible questions', { exact: true })).toBeVisible();
+});
+
+test('retention settings save in days and survive reload', async ({ page }) => {
+  await go(page, 'Settings');
+  await expect(
+    page.getByRole('spinbutton', { name: 'Desired retention (%)', exact: true })
+  ).toHaveValue('90');
+  await page.getByRole('spinbutton', { name: 'Desired retention (%)', exact: true }).fill('95');
+  await page.getByRole('spinbutton', { name: 'Maximum interval (days)', exact: true }).fill('120');
+  await page.getByRole('button', { name: 'Save settings', exact: true }).click();
+  await expect(page.getByText('Preferences saved locally.', { exact: true })).toBeVisible();
+  const preferences = (await records(page, 'settings')).find((s) => s.id === 'preferences');
+  expect(preferences.desiredRetention).toBe(95);
+  expect(preferences.maximumInterval).toBe(120 * 1440);
+  await page.reload();
+  await expect(
+    page.getByRole('spinbutton', { name: 'Desired retention (%)', exact: true })
+  ).toHaveValue('95');
+  await expect(
+    page.getByRole('spinbutton', { name: 'Maximum interval (days)', exact: true })
+  ).toHaveValue('120');
+});
+
+test('a scheduled question becomes reviewable without resetting open filters', async ({ page }) => {
+  await page.clock.install();
+  const bankId = await page.evaluate(async () => {
+    const db = await import('/js/storage.js');
+    const { keyFor } = await import('/js/spaced-repetition.js');
+    const bank = (await db.all('banks')).find((b) => b.enabled);
+    const question = bank.data.questions[0];
+    const now = Date.now();
+    await db.put('states', {
+      id: keyFor(bank.id, question.id),
+      bankId: bank.id,
+      questionId: question.id,
+      flagged: false,
+      repetitions: 1,
+      timesSeen: 1,
+      interval: 10,
+      due: now + 60000,
+      lastReviewed: now - 540000,
+      updatedAt: now
+    });
+    return bank.id;
+  });
+  await go(page, 'Review queue');
+  await expect(
+    page.getByRole('button', { name: 'Review due questions', exact: true })
+  ).toBeDisabled();
+  await page.getByText('Filter by bank, topic, or difficulty', { exact: true }).click();
+  await page.getByRole('listbox', { name: 'Banks', exact: true }).selectOption(bankId);
+  await page.clock.fastForward(61000);
+  await expect(
+    page.getByRole('button', { name: 'Review due questions', exact: true })
+  ).toBeEnabled();
+  await expect(
+    page.getByRole('button', { name: /Spaced repetition/ }).locator('strong')
+  ).toHaveText('1');
+  await expect(page.getByRole('listbox', { name: 'Banks', exact: true })).toHaveValues([bankId]);
+});
+
+test('Study orders new questions first or by difficulty without offering due-date order', async ({
+  page
+}) => {
+  await page.evaluate(async () => {
+    const db = await import('/js/storage.js');
+    const { keyFor } = await import('/js/spaced-repetition.js');
+    const bank = (await db.all('banks')).find((b) => b.enabled);
+    const question = bank.data.questions[0];
+    await db.put('states', {
+      id: keyFor(bank.id, question.id),
+      bankId: bank.id,
+      questionId: question.id,
+      timesSeen: 1,
+      skipped: true,
+      flagged: false,
+      updatedAt: Date.now()
+    });
+  });
+  await go(page, 'Study');
+  const order = page.getByRole('combobox', { name: 'Order', exact: true });
+  await expect(order).toHaveValue('new');
+  await expect(order.locator('option')).toHaveText([
+    'New first',
+    'Random',
+    'Difficulty: easy to hard',
+    'Difficulty: hard to easy'
+  ]);
+  await page.getByRole('spinbutton', { name: 'Session size', exact: true }).fill('1');
+  await page.getByRole('button', { name: 'Start studying', exact: true }).click();
+  await expect(page.locator('.prompt')).toHaveText(demo.questions[1].prompt);
+  await page.getByRole('button', { name: 'End session', exact: true }).click();
+  for (const [value, difficulty] of [
+    ['easy', 'easy'],
+    ['hard', 'hard']
+  ]) {
+    await order.selectOption(value);
+    await page.getByRole('spinbutton', { name: 'Session size', exact: true }).fill('1');
+    await page.getByRole('button', { name: 'Start studying', exact: true }).click();
+    await expect(page.locator('.prompt')).toHaveText(
+      demo.questions.find((q) => q.difficulty === difficulty).prompt
+    );
+    await page.getByRole('button', { name: 'End session', exact: true }).click();
+  }
+  await order.selectOption('random');
+  await expect(order).toHaveValue('random');
+});
+
+test('overview import shortcut opens a copyable format guide and keeps selected files', async ({
+  page
+}) => {
+  await page.evaluate(() =>
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: {
+        writeText: async (text) => {
+          window.formatCopiedText = text;
+        }
+      }
+    })
+  );
+  const action = page.getByRole('button', { name: 'Import questions', exact: true });
+  await expect(action).toBeVisible();
+  await expect(
+    action.locator('..').getByRole('button', { name: 'Start studying', exact: true })
+  ).toBeVisible();
+  await action.click();
+  const picker = page.getByLabel('Question bank JSON files', { exact: true });
+  await picker.setInputFiles({
+    name: 'my-questions.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify(demo))
+  });
+  await page.getByRole('button', { name: 'Format & AI guide', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: 'Question bank format', exact: true });
+  await expect(dialog.getByRole('button', { name: 'Copy AI prompt', exact: true })).toBeVisible();
+  await dialog.getByRole('button', { name: 'Copy AI prompt', exact: true }).click();
+  await expect(dialog.getByRole('status')).toHaveText(
+    'Copied. Paste it into your AI tool or text editor.'
+  );
+  const prompt = await page.evaluate(() => window.formatCopiedText);
+  expect(prompt).toContain('MY STUDY MATERIAL:');
+  expect(prompt).toContain('JSON SCHEMA');
+  expect(prompt).toContain('"schemaVersion": "1.0"');
+  expect(prompt).toContain('single_choice');
+  expect(prompt).toContain('multiple_choice');
+  expect(prompt).toContain('image_recognition');
+  expect(prompt).toContain('open_ended');
+  await dialog.getByText('Question fields', { exact: true }).click();
+  await expect(dialog.locator('dt').filter({ hasText: 'questions[].difficulty' })).toContainText(
+    'Required'
+  );
+  await expect(
+    dialog.locator('dt:visible').filter({ hasText: 'questions[].acceptedAnswer' })
+  ).toContainText('Depends on question type');
+  await dialog.getByText('Answer option fields', { exact: true }).click();
+  await expect(
+    dialog.locator('dd').filter({ hasText: 'Explain why this individual option' })
+  ).toBeVisible();
+  await dialog.getByText('Full JSON Schema', { exact: true }).click();
+  await dialog.getByRole('button', { name: 'Copy schema', exact: true }).click();
+  const schema = JSON.parse(await page.evaluate(() => window.formatCopiedText));
+  expect(schema.properties.schemaVersion.const).toBe('1.0');
+  await dialog.getByText('Example JSON — all four question types', { exact: true }).click();
+  await dialog.getByRole('button', { name: 'Copy example JSON', exact: true }).click();
+  const example = JSON.parse(await page.evaluate(() => window.formatCopiedText));
+  expect(example.questions).toHaveLength(4);
+  const downloadEvent = page.waitForEvent('download');
+  await dialog.getByRole('button', { name: 'Download example JSON', exact: true }).click();
+  expect((await downloadEvent).suggestedFilename()).toBe('question-bank-example.json');
+  await dialog.getByRole('button', { name: 'Back to import', exact: true }).click();
+  await expect(dialog).not.toBeVisible();
+  expect(await picker.evaluate((input) => input.files[0].name)).toBe('my-questions.json');
+  await picker.setInputFiles({
+    name: 'example.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify(example))
+  });
+  await page.getByRole('button', { name: 'Import questions', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Foundations', exact: true })).toBeVisible();
+});
+
+test('format guide is available offline and selects text when clipboard access fails', async ({
+  page,
+  context
+}) => {
+  await expect(page.locator('.local-label')).toContainText('Offline ready');
+  await context.setOffline(true);
+  await page.reload();
+  await page.getByRole('button', { name: 'Import questions', exact: true }).click();
+  await page.evaluate(() =>
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: {
+        writeText: async () => {
+          throw new Error('Clipboard unavailable');
+        }
+      }
+    })
+  );
+  await page.getByRole('button', { name: 'Format & AI guide', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: 'Question bank format', exact: true });
+  await dialog.getByRole('button', { name: 'Copy AI prompt', exact: true }).click();
+  await expect(dialog.getByRole('status')).toContainText('The text is selected');
+  expect(await page.evaluate(() => window.getSelection().toString())).toContain(
+    'Create a quitsar question-bank JSON file'
+  );
+  await page.keyboard.press('Escape');
+  await expect(dialog).not.toBeVisible();
+});
+
+test('format guide recovers from a failed asset request without disturbing import', async ({
+  page
+}) => {
+  await page.getByRole('button', { name: 'Import questions', exact: true }).click();
+  // Block service-worker cache for this request by stubbing the guide fetch directly.
+  await page.evaluate(() => {
+    const original = window.fetch;
+    window.formatOriginalFetch = original;
+    window.fetch = (...args) =>
+      String(args[0]).includes('question-bank.schema.json')
+        ? Promise.resolve(new Response('', { status: 503 }))
+        : original(...args);
+  });
+  await page.getByRole('button', { name: 'Format & AI guide', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: 'Question bank format', exact: true });
+  await expect(dialog.getByRole('alert')).toContainText('could not be loaded');
+  await page.evaluate(() => {
+    window.fetch = window.formatOriginalFetch;
+  });
+  await dialog.getByRole('button', { name: 'Try again', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Copy AI prompt', exact: true })).toBeVisible();
 });

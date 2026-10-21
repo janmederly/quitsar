@@ -60,17 +60,19 @@ try {
   browser = await chromium.launch();
   const context = await browser.newContext({ locale: 'en-GB' });
   const page = await context.newPage();
+  page.on('dialog', (dialog) => dialog.accept());
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto(origin);
-  await page.getByRole('heading', { name: 'A little progress, every day.' }).waitFor();
-  assert.match(await page.locator('.local-label').textContent(), /Local database/);
+  await page.waitForFunction(() => !document.querySelector('#header-language').disabled);
+  await page.getByRole('heading', { name: 'Your study space' }).waitFor();
+  assert.match(await page.locator('.local-label').textContent(), /Server storage/);
   if (await page.locator('#account-toggle').isVisible())
     await page.locator('#account-toggle').click();
   assert.equal(await page.getByText('Local database · single user', { exact: true }).count(), 1);
   assert.equal(await page.getByRole('button', { name: 'Sign out', exact: true }).count(), 0);
   await go(page, 'Question banks');
-  await page.getByRole('button', { name: 'Load included demo bank' }).click();
+  await page.getByRole('button', { name: 'Try the demo bank' }).click();
   await page.getByText('Saved to the local database.', { exact: true }).waitFor();
   assert.equal((await data(page, 'banks')).length, 1);
   assert.ok(Object.keys((await data(page, 'banks'))[0].assets).length);
@@ -79,19 +81,21 @@ try {
   await page.getByRole('button', { name: 'Save settings', exact: true }).click();
   await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
   await go(page, 'Study');
-  await page.getByRole('button', { name: 'Start session' }).click();
+  await page.getByRole('button', { name: 'Start studying' }).click();
   await page.getByRole('button', { name: 'Skip', exact: true }).click();
-  await page.getByText('Skipped · Saved to your skipped queue', { exact: true }).waitFor();
+  await page
+    .getByText('Skipped · Find this in Review queue → Skipped questions', { exact: true })
+    .waitFor();
   assert.equal((await data(page, 'history')).length, 1);
   await go(page, 'Exam simulator');
   await page.getByLabel('Number of questions').fill('1');
   await page.getByLabel('Use countdown timer').uncheck();
-  await page.getByRole('button', { name: 'Preview exam' }).click();
+  await page.getByRole('button', { name: 'Preview exam', exact: true }).click();
   await page.getByRole('button', { name: 'Start exam', exact: true }).click();
   await page.getByRole('heading', { name: 'Question 1 of 1', exact: true }).waitFor();
   await page.getByRole('button', { name: 'Submit exam', exact: true }).click();
   await page.getByRole('button', { name: 'Submit & save results' }).click();
-  await page.getByRole('heading', { name: 'A clearer picture of your progress.' }).waitFor();
+  await page.getByRole('heading', { name: 'Exam results' }).waitFor();
   assert.equal((await data(page, 'attempts')).length, 1);
   assert.equal((await data(page, 'active')).length, 0);
   assert.ok((await data(page, 'states')).length);
@@ -104,7 +108,7 @@ try {
   await page.getByLabel('Include open-ended self-assessment').check();
   await page.getByLabel('Question types', { exact: true }).selectOption('open_ended');
   await page.getByLabel('Use countdown timer').uncheck();
-  await page.getByRole('button', { name: 'Preview exam' }).click();
+  await page.getByRole('button', { name: 'Preview exam', exact: true }).click();
   await page.getByRole('button', { name: 'Start exam', exact: true }).click();
   const answer = page.locator('textarea');
   await answer.waitFor();
@@ -144,7 +148,7 @@ try {
   });
   await go(page, 'Overview');
   releaseWrite();
-  await page.getByRole('heading', { name: 'A little progress, every day.' }).waitFor();
+  await page.getByRole('heading', { name: 'Your study space' }).waitFor();
   assert.equal(snapshots.length, 2);
   assert.equal((await data(page, 'active'))[0].items[0].text, 'latest answer 99');
   await go(page, 'Exam simulator');
@@ -153,7 +157,7 @@ try {
   await answer.fill('final answer before debounce');
   await page.getByRole('button', { name: 'Submit exam', exact: true }).click();
   await page.getByRole('button', { name: 'Submit & save results' }).click();
-  await page.getByRole('heading', { name: 'A clearer picture of your progress.' }).waitFor();
+  await page.getByRole('heading', { name: 'Exam results' }).waitFor();
   const completed = (await data(page, 'attempts')).find(
     (a) => a.items[0].text === 'final answer before debounce'
   );
@@ -188,8 +192,8 @@ try {
     mimeType: 'application/json',
     buffer: Buffer.from(largeBackup)
   });
-  await page.getByRole('button', { name: 'Validate & preview merge' }).click();
-  await page.getByRole('heading', { name: 'Ready to merge' }).waitFor();
+  await page.getByRole('button', { name: 'Preview restore' }).click();
+  await page.getByRole('heading', { name: 'Review your backup' }).waitFor();
   let uploads = 0;
   await page.route('**/api/restore', async (route) => {
     const body = route.request().postDataJSON();
@@ -201,11 +205,11 @@ try {
       });
     return route.continue();
   });
-  await page.getByRole('button', { name: 'Confirm merge' }).click();
+  await page.getByRole('button', { name: 'Restore backup' }).click();
   await page.getByText('Simulated interrupted upload', { exact: true }).waitFor();
   assert.equal((await data(page, 'history')).length, beforeHistory);
   await page.unroute('**/api/restore');
-  await page.getByRole('button', { name: 'Confirm merge' }).click();
+  await page.getByRole('button', { name: 'Restore backup' }).click();
   await page.getByText('Saved to the local database.', { exact: true }).waitFor();
   assert.equal((await data(page, 'history')).length, beforeHistory + 3);
   await context.close();
@@ -215,7 +219,8 @@ try {
   const fresh = await browser.newContext({ locale: 'en-GB' });
   const again = await fresh.newPage();
   await again.goto(origin);
-  await again.getByRole('heading', { name: 'A little progress, every day.' }).waitFor();
+  await again.waitForFunction(() => !document.querySelector('#header-language').disabled);
+  await again.getByRole('heading', { name: 'Your study space' }).waitFor();
   assert.equal((await data(again, 'banks')).length, 1);
   assert.equal((await data(again, 'attempts')).length, 1);
   assert.equal(await again.locator('html').getAttribute('data-theme'), 'dark');

@@ -1,6 +1,7 @@
 import { t, label } from './i18n.js';
 import { el, field, prettyType } from './dom.js';
 import { TYPES } from './validation.js';
+import { matchesQueue } from './spaced-repetition.js';
 export function questionPool(banks) {
   return banks
     .filter((b) => b.enabled)
@@ -65,11 +66,12 @@ export function filterPanel(banks, states, options = {}) {
   const stateSelect = el(
     'select',
     {},
-    ['all', 'due', 'new', 'flagged', 'incorrect', 'skipped'].map((s) =>
+    (options.review ? ['due', 'incorrect', 'flagged', 'skipped'] : ['all', 'new']).map((s) =>
       el('option', { value: s, selected: s === options.queue }, label(s))
     )
   );
-  if (!options.exam) panel.append(field(t('Review queue'), stateSelect));
+  if (!options.exam && !options.hideQueue)
+    panel.append(field(t('Question selection'), stateSelect));
   const referenceSet = options.references ? new Set(options.references) : null;
   const selected = (name) => [...controls[name].selectedOptions].map((o) => o.value);
   function eligible() {
@@ -92,28 +94,28 @@ export function filterPanel(banks, states, options = {}) {
         if (picked.length && !picked.some((v) => vals.includes(v))) return false;
       }
       if (options.exam) return true;
-      switch (stateSelect.value) {
-        case 'due':
-          return !!state?.due && state.due <= Date.now();
-        case 'new':
-          return !state?.timesSeen;
-        case 'flagged':
-          return !!state?.flagged;
-        case 'incorrect':
-          return state?.lastObjectiveCorrect === false;
-        case 'skipped':
-          return !!state?.skipped;
-        default:
-          return true;
-      }
+      return matchesQueue(state, stateSelect.value);
     });
   }
   return {
     panel,
     eligible,
+    setQueue(queue) {
+      stateSelect.value = queue;
+      panel.dispatchEvent(new Event('change'));
+    },
+    queue: () => stateSelect.value,
+    set(values) {
+      for (const [name, selected] of Object.entries(values)) {
+        if (!controls[name]) continue;
+        for (const option of controls[name].options)
+          option.selected = selected.includes(option.value);
+      }
+      panel.dispatchEvent(new Event('change'));
+    },
     reset() {
       Object.values(controls).forEach((s) => [...s.options].forEach((o) => (o.selected = false)));
-      stateSelect.value = 'all';
+      stateSelect.value = options.review ? stateSelect.value : 'all';
       panel.dispatchEvent(new Event('change'));
     },
     description() {

@@ -195,7 +195,7 @@ export function attemptView(ctx, attempt) {
             'div',
             { class: 'actions no-print' },
             button(
-              current?.flagged ? t('⚑ In review queue') : t('Add to review queue'),
+              current?.flagged ? t('Saved for later') : t('Save for later'),
               async () => {
                 await ctx.flag(item, !ctx.states.get(keyFor(item.bankId, q.id))?.flagged);
                 renderReview();

@@ -1,12 +1,17 @@
-const CACHE = 'quitsar-v14';
+const CACHE = 'quitsar-v28';
 const FILES = [
   './',
   './index.html',
   './styles/app.css',
   './assets/icon.svg',
+  './assets/google/g-logo.png',
+  './assets/google/google-sans-medium-latin.woff2',
+  './assets/google/google-sans-medium-latin-ext.woff2',
   './js/app.js',
+  './js/demo.js',
   './js/dom.js',
   './js/i18n.js',
+  './js/locales/en.js',
   './js/locales/sk.js',
   './js/locales/cs.js',
   './js/locales/de.js',
@@ -17,6 +22,7 @@ const FILES = [
   './js/limits.js',
   './js/scoring.js',
   './js/spaced-repetition.js',
+  './js/vendor/ts-fsrs.js',
   './js/validation.js',
   './js/records.js',
   './js/autosave.js',
@@ -25,13 +31,15 @@ const FILES = [
   './js/question.js',
   './js/transfer.js',
   './js/management.js',
+  './js/import-format.js',
+  './assets/question-bank.schema.json',
+  './assets/question-bank.example.json',
   './js/study.js',
   './js/exam.js',
   './js/results.js',
   './banks/demo.json',
-  './banks/images/annulus.svg',
-  './banks/images/history-timeline.svg',
-  './banks/images/cell-diagram.svg'
+  './banks/images/animal-cell.webp',
+  './banks/images/food-chain.webp'
 ];
 self.addEventListener('install', (event) =>
   event.waitUntil(

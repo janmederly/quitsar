@@ -99,13 +99,27 @@ export async function initializeAccount() {
       throw error;
     }
   }
-  if (usesServerStorage())
-    localStorage.setItem('quitsar-account', localDatabase() ? 'local' : '1');
+  if (usesServerStorage()) localStorage.setItem('quitsar-account', localDatabase() ? 'local' : '1');
   showAccount();
 }
 export function showAccount() {
   const target = document.querySelector('#account');
   if (!target) return;
+  const header = document.querySelector('#header-account');
+  header?.replaceChildren(
+    ...(!session.user &&
+    !localDatabase() &&
+    (session.googleEnabled || localStorage.getItem('quitsar-account') === '1')
+      ? [
+          el(
+            'a',
+            { href: '/api/auth/google', class: 'google-signin' },
+            el('img', { src: 'assets/google/g-logo.png', alt: '', width: 20, height: 20 }),
+            el('span', {}, t('Sign in with Google'))
+          )
+        ]
+      : [])
+  );
   if (localDatabase()) {
     target.replaceChildren(
       el('p', {}, t('Local database · single user')),
@@ -140,8 +154,6 @@ export function showAccount() {
             'subtle'
           )
         : [
-            (session.googleEnabled || localStorage.getItem('quitsar-account') === '1') &&
-              el('a', { href: '/api/auth/google', class: 'button' }, t('Sign in with Google')),
             localStorage.getItem('quitsar-account') &&
               button(
                 t('Continue as guest'),

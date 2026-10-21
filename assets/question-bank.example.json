@@ -1,0 +1,129 @@
+{
+  "schemaVersion": "1.0",
+  "bank": {
+    "id": "my-foundations",
+    "title": "Foundations",
+    "description": "Original educational exercises.",
+    "language": "en",
+    "version": "1.0.0",
+    "createdAt": "2026-10-19",
+    "topics": [
+      {
+        "id": "basics",
+        "title": "Basics",
+        "subtopics": [
+          {
+            "id": "recall",
+            "title": "Recall"
+          }
+        ]
+      }
+    ],
+    "author": "Example author",
+    "license": "Original example content; replace with your own license.",
+    "updatedAt": "2026-10-19"
+  },
+  "questions": [
+    {
+      "id": "q-open",
+      "type": "open_ended",
+      "topicId": "basics",
+      "subtopicId": "recall",
+      "prompt": "What does annular mean?",
+      "acceptedAnswer": {
+        "display": "Ring-shaped.",
+        "aliases": ["Circular ring"],
+        "feedback": "Describe the shape."
+      },
+      "explanation": "Annular describes shape rather than cause.",
+      "difficulty": "easy",
+      "tags": ["morphology"],
+      "source": {
+        "title": "My notes",
+        "pageOrSlide": "1",
+        "reference": "Original study notes",
+        "notes": "Replace this with a reference to your own material."
+      }
+    },
+    {
+      "id": "q-single",
+      "type": "single_choice",
+      "topicId": "basics",
+      "prompt": "Which is a unit of volume?",
+      "options": [
+        {
+          "id": "ml",
+          "text": "Milliliter",
+          "isCorrect": true,
+          "rationale": "Milliliters measure volume."
+        },
+        {
+          "id": "min",
+          "text": "Minute",
+          "isCorrect": false,
+          "rationale": "Minutes measure time."
+        }
+      ],
+      "explanation": "Check dimensions when calculating.",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q-multi",
+      "type": "multiple_choice",
+      "topicId": "basics",
+      "prompt": "Select the time units.",
+      "options": [
+        {
+          "id": "sec",
+          "text": "Second",
+          "isCorrect": true,
+          "rationale": "A time unit."
+        },
+        {
+          "id": "min",
+          "text": "Minute",
+          "isCorrect": true,
+          "rationale": "A time unit."
+        },
+        {
+          "id": "ml",
+          "text": "Milliliter",
+          "isCorrect": false,
+          "rationale": "A volume unit."
+        }
+      ],
+      "explanation": "A minute comprises sixty seconds.",
+      "difficulty": "medium",
+      "tags": ["units"]
+    },
+    {
+      "id": "q-image",
+      "type": "image_recognition",
+      "selectionMode": "single",
+      "topicId": "basics",
+      "prompt": "Which structure is labeled in your cell diagram?",
+      "images": [
+        {
+          "path": "diagram.svg",
+          "alt": "Simplified cell with its nucleus labeled"
+        }
+      ],
+      "options": [
+        {
+          "id": "nucleus",
+          "text": "Nucleus",
+          "isCorrect": true,
+          "rationale": "The diagram labels the central structure."
+        },
+        {
+          "id": "ribosome",
+          "text": "Ribosome",
+          "isCorrect": false,
+          "rationale": "No ribosome is labeled."
+        }
+      ],
+      "explanation": "This is a simplified schematic.",
+      "difficulty": "easy"
+    }
+  ]
+}

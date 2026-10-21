@@ -8,6 +8,7 @@ import { keyFor, schedule } from './spaced-repetition.js';
 import { scoreQuestion } from './scoring.js';
 import { createAutosave } from './autosave.js';
 import { attemptView } from './results.js';
+import { DEMO_ID } from './demo.js';
 
 export function examSetup(ctx) {
   if (ctx.active) {
@@ -46,7 +47,14 @@ export function examSetup(ctx) {
     return;
   }
   const filters = filterPanel(ctx.banks, ctx.states, { exam: true });
-  const number = el('input', { type: 'number', value: 10, min: 1, max: 1000, required: true });
+  const available = filters.eligible().filter((item) => item.question.type !== 'open_ended').length;
+  const number = el('input', {
+    type: 'number',
+    value: Math.min(10, available) || 10,
+    min: 1,
+    max: 1000,
+    required: true
+  });
   const duration = el('input', { type: 'number', value: 30, min: 1, max: 1440, required: true });
   const warnings = el('input', { value: ctx.settings.warnings, required: true });
   const random = el('input', { type: 'checkbox', checked: true });
@@ -221,6 +229,65 @@ export function examSetup(ctx) {
       el('button', { type: 'submit', class: 'primary' }, t('Preview exam →'))
     )
   );
+  const demoAvailable = ctx.banks.some((bank) => bank.id === DEMO_ID && bank.enabled);
+  const presets =
+    demoAvailable &&
+    el(
+      'section',
+      { class: 'exam-presets', 'aria-labelledby': 'demo-exams-title' },
+      el('h2', { id: 'demo-exams-title' }, t('Try a biology exam')),
+      el('p', { class: 'muted' }, t('Choose a practice exam, or set up your own below.')),
+      ...[
+        {
+          title: 'Quick quiz',
+          description: '5 questions · No timer',
+          count: 5,
+          timed: false,
+          written: false
+        },
+        {
+          title: 'Timed practice',
+          description: '8 questions · 10 minutes',
+          count: 8,
+          timed: true,
+          written: false
+        },
+        {
+          title: 'Explain it yourself',
+          description: '3 written answers · No timer',
+          count: 3,
+          timed: false,
+          written: true
+        }
+      ].map((preset) =>
+        el(
+          'div',
+          { class: 'list-row' },
+          el('div', {}, el('h3', {}, t(preset.title)), el('p', {}, t(preset.description))),
+          button(
+            t('Preview exam →'),
+            () => {
+              filters.reset();
+              filters.set({ banks: [DEMO_ID], types: preset.written ? ['open_ended'] : [] });
+              number.value = preset.count;
+              open.checked = preset.written;
+              timer.checked = preset.timed;
+              duration.value = 10;
+              warnings.value = '5,1';
+              random.checked = true;
+              repeat.checked = false;
+              changes.checked = true;
+              explanations.checked = true;
+              scoring.value = 'both';
+              update();
+              form.requestSubmit();
+            },
+            'secondary',
+            { 'aria-label': t`Preview exam: ${t(preset.title)}` }
+          )
+        )
+      )
+    );
   form.addEventListener('change', update);
   update();
   ctx.show(
@@ -229,6 +296,7 @@ export function examSetup(ctx) {
       t('Exam simulator'),
       t('Create a rehearsal that fits your exam. Your progress is saved as you go.')
     ),
+    presets,
     form
   );
 }

@@ -130,16 +130,6 @@ export function showAccount() {
         ]
       : [])
   );
-  if (header?.querySelector('.google-signin'))
-    header.append(
-      el(
-        'small',
-        { class: 'signin-legal' },
-        el('a', { href: '/privacy.html' }, t('Privacy Policy')),
-        ' · ',
-        el('a', { href: '/terms.html' }, t('Terms of Service'))
-      )
-    );
   if (localDatabase()) {
     target.replaceChildren(
       el('p', {}, t('Local database · single user')),

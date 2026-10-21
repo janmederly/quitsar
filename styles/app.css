@@ -1758,11 +1758,6 @@
     flex-wrap: wrap;
     gap: 16px;
   }
-  .signin-legal {
-    display: block;
-    margin-top: 4px;
-    font-size: 0.75rem;
-  }
   .legal-page {
     min-height: 100vh;
   }
